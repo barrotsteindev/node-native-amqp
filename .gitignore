@@ -1,3 +1,5 @@
 *Debug*
 *Release
 cpp_test/test_amqp/bin/
+benchamrks/node-amqp/node_modules/
+*/node_modules/*
