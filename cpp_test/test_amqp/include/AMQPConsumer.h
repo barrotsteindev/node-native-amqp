@@ -13,12 +13,13 @@ class AMQPConsumer
     bool acks;
 
     public:
-        explicit AMQPConsumer(std::string broker_address, std::string queue_name, std::string routing_key, bool acks);
-        //explicit AMQPConsumer(std::string broker_address, std::string queue_name, std::string routing_key, bool true);
-        //explicit AMQPConsumer(std::string broker_address, std::string queue_name, (""), (true));
-        //explicit AMQPConsumer(("localhost"), std::string queue_name, (""), (true));
+        explicit AMQPConsumer(std::string broker_address, std::string queue_name, std::string routing_key, bool false);
+        explicit AMQPConsumer(std::string broker_address, std::string queue_name, std::string routing_key) { acks=true;}
+        explicit AMQPConsumer(std::string broker_address, std::string queue_name) {routing_key="#"; acks=true;}
+        explicit AMQPConsumer(std::string queue_name) {broker_address=""; routing_key="#", acks=true;}
         virtual ~AMQPConsumer();
-        AmqpClient::BasicMessage::ptr_t Poll();
+        AmqpClient::Envelope::ptr_t Poll();
+        void ack(const AmqpClient::Envelope::ptr_t &msg_envelope);
 
     protected:
 

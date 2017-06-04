@@ -11,16 +11,22 @@ AMQPConsumer::AMQPConsumer(std::string broker_address,std::string queue_name, st
     queue_name = queue_name;
 }
 
+
+
 AMQPConsumer::~AMQPConsumer()
 {
     //dtor
 }
 
-AmqpClient::BasicMessage::ptr_t AMQPConsumer::Poll() {
+AmqpClient::Envelope::ptr_t AMQPConsumer::Poll() {
     AmqpClient::Envelope::ptr_t msg;
     while (true) {
         msg = m_channel->BasicConsumeMessage(m_consumer_string);
         if(msg->Message()) { break; }
     }
-    return msg->Message();
+    return msg;
+}
+
+void AMQPConsumer::ack(const AmqpClient::Envelope::ptr_t &msg_envelope) {
+    m_channel->BasicAck(msg_envelope);
 }
