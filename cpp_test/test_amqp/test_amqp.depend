@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1496597711 source:/home/brotstein/projects/rabbitmq-native/cpp_test/test_amqp/main.cpp
+1496599470 source:/home/brotstein/projects/rabbitmq-native/cpp_test/test_amqp/main.cpp
 	<iostream>
 	<stdlib.h>
 	<SimpleAmqpClient/SimpleAmqpClient.h>
@@ -189,11 +189,11 @@
 	<algorithm>
 	<new>
 
-1496597048 source:/home/brotstein/projects/rabbitmq-native/cpp_test/test_amqp/src/AMQPConsumer.cpp
+1496599594 source:/home/brotstein/projects/rabbitmq-native/cpp_test/test_amqp/src/AMQPConsumer.cpp
 	"AMQPConsumer.h"
 	<SimpleAmqpClient/SimpleAmqpClient.h>
 
-1496596896 /home/brotstein/projects/rabbitmq-native/cpp_test/test_amqp/include/AMQPConsumer.h
+1497027116 /home/brotstein/projects/rabbitmq-native/cpp_test/test_amqp/include/AMQPConsumer.h
 	<string>
 	<SimpleAmqpClient/SimpleAmqpClient.h>
 
