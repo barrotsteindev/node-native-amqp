@@ -10,6 +10,7 @@ class Message {
         explicit Message(AmqpClient::Channel::ptr_t, const AmqpClient::Envelope::ptr_t &msg_envelope);
         void Ack(void);
         bool Valid(void);
+        std::string MessageBody(void);
         virtual ~Message();
 
     protected:

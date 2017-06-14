@@ -14,6 +14,11 @@ bool Message::Valid(void) {
   return (m_envelope != NULL);
 }
 
+std::string Message::MessageBody(void) {
+  return m_envelope->Message()->Body();
+}
+
+
 Message::~Message() {
     // dtor
 }

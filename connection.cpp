@@ -48,8 +48,9 @@ class Consumer : public Nan::ObjectWrap {
     if (!(msg->Valid())) {
       return info.GetReturnValue().Set(Nan::New<v8::String>("consumer time out").ToLocalChecked());
     }
+    info.GetReturnValue().Set(Nan::New(msg->MessageBody()).ToLocalChecked());
     //obj->cur_msg_ = msg;
-    info.GetReturnValue().Set(Nan::New(obj->cur_msg_->Message()->Body()).ToLocalChecked());
+    //info.GetReturnValue().Set(Nan::New(obj->cur_msg_->Message()->Body()).ToLocalChecked());
   }
 
   static NAN_METHOD(GetHandle) {

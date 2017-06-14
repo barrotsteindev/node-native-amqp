@@ -21,7 +21,8 @@ AMQPConsumer::~AMQPConsumer()
 Message* AMQPConsumer::Poll() throw (bool) {
     AmqpClient::Envelope::ptr_t msg;
     m_channel->BasicConsumeMessage(m_consumer_string, msg, 1000);
-    return new Message(m_channel, msg);
+    Message* msg_obj = new Message(m_channel, msg);
+    return msg_obj;
 }
 
 void AMQPConsumer::ack(const AmqpClient::Envelope::ptr_t &msg_envelope) {
