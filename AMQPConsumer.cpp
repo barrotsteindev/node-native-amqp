@@ -18,10 +18,10 @@ AMQPConsumer::~AMQPConsumer()
     //dtor
 }
 
-AmqpClient::Envelope::ptr_t AMQPConsumer::Poll() throw (bool) {
+Message* AMQPConsumer::Poll() throw (bool) {
     AmqpClient::Envelope::ptr_t msg;
     m_channel->BasicConsumeMessage(m_consumer_string, msg, 1000);
-    return msg;
+    return new Message(m_channel, msg);
 }
 
 void AMQPConsumer::ack(const AmqpClient::Envelope::ptr_t &msg_envelope) {

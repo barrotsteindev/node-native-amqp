@@ -44,11 +44,11 @@ class Consumer : public Nan::ObjectWrap {
 
   static NAN_METHOD(GetMessage) {
     Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
-    AmqpClient::Envelope::ptr_t msg = obj->consumer_->Poll();
-    if (!(msg)) {
+    Message* msg = obj->consumer_->Poll();
+    if (!(msg->Valid())) {
       return info.GetReturnValue().Set(Nan::New<v8::String>("consumer time out").ToLocalChecked());
     }
-    obj->cur_msg_ = msg;
+    //obj->cur_msg_ = msg;
     info.GetReturnValue().Set(Nan::New(obj->cur_msg_->Message()->Body()).ToLocalChecked());
   }
 

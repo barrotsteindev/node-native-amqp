@@ -3,10 +3,10 @@
 
 #include <string>
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
+#include "Message.h"
 
 
-class AMQPConsumer
-{
+class AMQPConsumer {
     std::string broker_address;
     std::string queue_name;
     std::string routing_key;
@@ -18,7 +18,7 @@ class AMQPConsumer
         explicit AMQPConsumer(std::string broker_address, std::string queue_name) {routing_key="#"; m_acks=true;}
         explicit AMQPConsumer(std::string queue_name) {broker_address=""; routing_key="#", m_acks=true;}
         virtual ~AMQPConsumer();
-        AmqpClient::Envelope::ptr_t Poll();
+        Message* Poll();
         void ack(const AmqpClient::Envelope::ptr_t &msg_envelope);
 
     protected:

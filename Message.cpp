@@ -10,6 +10,10 @@ void Message::Ack(void) {
   m_channel->BasicAck(m_envelope);
 }
 
+bool Message::Valid(void) {
+  return (m_envelope != NULL);
+}
+
 Message::~Message() {
     // dtor
 }
