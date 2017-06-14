@@ -1,5 +1,6 @@
 #include <nan.h>
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
+#include "Message.h"
 #include "AMQPConsumer.h"
 
 class Consumer : public Nan::ObjectWrap {

@@ -1,22 +1,22 @@
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#ifndef Message_H
+#define Message_H
 
 #include <string>
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
 
 
-class Message
-{
+class Message {
 
     public:
-        explicit Message(AmqpClient::Channel::ptr_t &Channel, const AmqpClient::Envelope::ptr_t &msg_envelope);
+        explicit Message(AmqpClient::Channel::ptr_t, const AmqpClient::Envelope::ptr_t &msg_envelope);
+        void Ack(void);
         virtual ~Message();
-        void ack(const AmqpClient::Envelope::ptr_t &msg_envelope);
 
     protected:
 
     private:
         AmqpClient::Channel::ptr_t m_channel;
+        AmqpClient::Envelope::ptr_t m_envelope;
 };
 
-#endif // MESSAGE_H
+#endif // Message_H

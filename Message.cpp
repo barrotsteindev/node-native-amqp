@@ -1,19 +1,15 @@
 #include "Message.h"
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
 
-Message::Message(AmqpClient::Channel::ptr_t &Channel, const AmqpClient::Envelope::ptr_t &msg_envelope)
-{
-    //m_channel = Channel;
-    m_channel = AmqpClient::Channel::Create("localhost");
+Message::Message(AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope::ptr_t &msg_envelope) {
+  m_channel = channel;
+  m_envelope = msg_envelope;
 }
 
-
-
-Message::~Message()
-{
-    //dtor
+void Message::Ack(void) {
+  m_channel->BasicAck(m_envelope);
 }
 
-void Message::ack(const AmqpClient::Envelope::ptr_t &msg_envelope) {
-    m_channel->BasicAck(msg_envelope);
+Message::~Message() {
+    // dtor
 }
