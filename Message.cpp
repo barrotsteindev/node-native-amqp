@@ -1,10 +1,34 @@
 #include "Message.h"
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
+#include <nan.h>
+
+Nan::Persistent<v8::Function> Message::constructor;
+
+void Message::Init() {
+  Nan::HandleScope scope;
+
+  // Prepare constructor template
+  v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
+  tpl->SetClassName(Nan::New("Message").ToLocalChecked());
+  tpl->InstanceTemplate()->SetInternalFieldCount(2);
+
+  constructor.Reset(tpl->GetFunction());
+}
+
+void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+  Message* obj = new Message();
+  obj->Wrap(info.This());
+
+  info.GetReturnValue().Set(info.This());
+}
+
 
 Message::Message(AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope::ptr_t &msg_envelope) {
   m_channel = channel;
   m_envelope = msg_envelope;
 }
+
+Message::Message() {}
 
 void Message::Ack(void) {
   m_channel->BasicAck(m_envelope);
@@ -17,6 +41,11 @@ bool Message::Valid(void) {
 std::string Message::MessageBody(void) {
   return m_envelope->Message()->Body();
 }
+
+// Message::JsObj(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+//   this->Wrap(info.This());
+//   info.GetReturnValue().Set(info.This());
+// }
 
 
 Message::~Message() {
