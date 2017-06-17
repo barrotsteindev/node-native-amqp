@@ -2,27 +2,20 @@
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
 #include <nan.h>
 
-static NAN_MODULE_INIT(Init) {
+void Message::Init() {
   // Prepare constructor template
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Message").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
-  constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
-  Nan::Set(target, Nan::New("Message").ToLocalChecked(),
-    Nan::GetFunction(tpl).ToLocalChecked());
+  constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
 }
 
-static NAN_METHOD(New) {
+void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   Message* obj = new Message();
   obj->Wrap(info.This());
 
   info.GetReturnValue().Set(info.This());
-}
-
-Nan::Persistent<v8::Function>& Message::constructor(void) {
-  Nan::Persistent<v8::Function> my_constructor;
-  return my_constructor;
 }
 
 Message::Message(AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope::ptr_t &msg_envelope) {
