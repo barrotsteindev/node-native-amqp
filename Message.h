@@ -6,9 +6,10 @@
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
 
 
-class Message: public Nan::ObjectWrap {
+class Message : public Nan::ObjectWrap {
     public:
-        static void Init();
+        //static void Init();
+        static NAN_MODULE_INIT(Init);
         explicit Message(AmqpClient::Channel::ptr_t, const AmqpClient::Envelope::ptr_t &msg_envelope);
         explicit Message();
         void Ack(void);
@@ -21,8 +22,8 @@ class Message: public Nan::ObjectWrap {
     private:
         AmqpClient::Channel::ptr_t m_channel;
         AmqpClient::Envelope::ptr_t m_envelope;
-        static Nan::Persistent<v8::Function> constructor;
-        static void New(const Nan::FunctionCallbackInfo<v8::Value>& info);
+        static Nan::Persistent<v8::Function>& constructor(void);
+        static NAN_METHOD(New);
 };
 
 #endif // Message_H

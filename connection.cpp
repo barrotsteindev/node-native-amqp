@@ -6,6 +6,7 @@
 class Consumer : public Nan::ObjectWrap {
  public:
   static NAN_MODULE_INIT(Init) {
+    Message::Init(target);
     v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
     tpl->SetClassName(Nan::New("Consumer").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
