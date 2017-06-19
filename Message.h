@@ -12,6 +12,9 @@ class Message : public Nan::ObjectWrap {
         static void Init();
         explicit Message(AmqpClient::Channel::ptr_t, const AmqpClient::Envelope::ptr_t &msg_envelope);
         explicit Message();
+        static void JsValue(const Nan::FunctionCallbackInfo<v8::Value>& info);
+        static v8::Local<v8::Object> NewInstance(v8::Local<v8::Value> arg);
+        v8::Local<v8::Object> V8Instance(v8::Local<v8::Value> arg);
         void Ack(void);
         bool Valid(void);
         std::string MessageBody(void);
@@ -23,6 +26,9 @@ class Message : public Nan::ObjectWrap {
         AmqpClient::Channel::ptr_t m_channel;
         AmqpClient::Envelope::ptr_t m_envelope;
         static void New(const Nan::FunctionCallbackInfo<v8::Value>& info);
+        static void New(const Nan::FunctionCallbackInfo<v8::Value>& info, AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope::ptr_t &msg_envelope);
+        Message* message_;
+        std::string testing;  //del afterwards
 };
 
 #endif // Message_H
