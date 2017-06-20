@@ -30,7 +30,8 @@ v8::Local<v8::Object> Message::V8Instance(v8::Local<v8::Value> arg) {
   Nan::EscapableHandleScope scope;
 
   const unsigned argc = 1;
-  v8::Local<v8::Value> argv[argc] = { arg };
+  //v8::Local<v8::Value> argv[argc] = { v8::External::New(v8::Isolate::GetCurrent(), &this->m_envelope), v8::External::New(v8::Isolate::GetCurrent(), &this->m_channel) };
+  v8::Local<v8::Value> argv[argc] = { Nan::New<v8::External>(&this->m_envelope), Nan::New<v8::External>(&this->m_channel) };
   v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
   v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
 
@@ -38,7 +39,11 @@ v8::Local<v8::Object> Message::V8Instance(v8::Local<v8::Value> arg) {
 }
 
 void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
-  Message* obj = new Message();
+  v8::Handle<v8::External> external_envelope = v8::Handle<v8::External>::Cast(info[0]);
+  v8::Handle<v8::External> external_channel = v8::Handle<v8::External>::Cast(info[1]);
+  AmqpClient::Envelope::ptr_t envelope = static_cast<AmqpClient::Envelope::ptr_t>(external_envelope->Value());
+  AmqpClient::Channel::ptr_t channel = static_cast<AmqpClient::Channel::ptr_t>(external_envelope->Value());
+  Message* obj = new Message(channel, envelope);
   obj->Wrap(info.This());
 
   info.GetReturnValue().Set(info.This());
@@ -53,17 +58,19 @@ void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info, AmqpClient::
 
 void Message::JsValue(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
-  //info.GetReturnValue().Set(Nan::New(msg->MessageBody()).ToLocalChecked());
-  info.GetReturnValue().Set(Nan::New(msg->testing).ToLocalChecked());
+  info.GetReturnValue().Set(Nan::New(msg->MessageBody()).ToLocalChecked());
 }
 
 Message::Message(AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope::ptr_t &msg_envelope) {
   m_channel = channel;
   m_envelope = msg_envelope;
-  message_ = this;
 }
 
 Message::Message() {message_ = this; testing="abc";}
+
+Message::Message(std::string test) {
+  testing = test;
+}
 
 void Message::Ack(void) {
   m_channel->BasicAck(m_envelope);
@@ -76,11 +83,6 @@ bool Message::Valid(void) {
 std::string Message::MessageBody(void) {
   return m_envelope->Message()->Body();
 }
-
-// Message::JsObj(const Nan::FunctionCallbackInfo<v8::Value>& info) {
-//   this->Wrap(info.This());
-//   info.GetReturnValue().Set(info.This());
-// }
 
 
 Message::~Message() {
