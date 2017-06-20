@@ -11,7 +11,7 @@ class Message : public Nan::ObjectWrap {
         static Nan::Persistent<v8::Function> constructor;
         static void Init();
         explicit Message(AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope::ptr_t &msg_envelope);
-        //explicit Message(AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope::ptr_t &msg_envelope);
+        explicit Message(AmqpClient::Channel::ptr_t* channel, const AmqpClient::Envelope::ptr_t* msg_envelope);
         explicit Message();
         explicit Message(std::string test);
         static void JsValue(const Nan::FunctionCallbackInfo<v8::Value>& info);

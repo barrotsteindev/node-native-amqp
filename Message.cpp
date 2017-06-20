@@ -29,9 +29,9 @@ v8::Local<v8::Object> Message::NewInstance(v8::Local<v8::Value> arg) {
 v8::Local<v8::Object> Message::V8Instance(v8::Local<v8::Value> arg) {
   Nan::EscapableHandleScope scope;
 
-  const unsigned argc = 1;
-  //v8::Local<v8::Value> argv[argc] = { v8::External::New(v8::Isolate::GetCurrent(), &this->m_envelope), v8::External::New(v8::Isolate::GetCurrent(), &this->m_channel) };
-  v8::Local<v8::Value> argv[argc] = { Nan::New<v8::External>(&this->m_envelope), Nan::New<v8::External>(&this->m_channel) };
+  const unsigned argc = 2;
+  v8::Local<v8::Value> argv[argc] = { Nan::New<v8::External>(&this->m_envelope),
+                                      Nan::New<v8::External>(&this->m_channel) };
   v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
   v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
 
@@ -41,8 +41,8 @@ v8::Local<v8::Object> Message::V8Instance(v8::Local<v8::Value> arg) {
 void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   v8::Handle<v8::External> external_envelope = v8::Handle<v8::External>::Cast(info[0]);
   v8::Handle<v8::External> external_channel = v8::Handle<v8::External>::Cast(info[1]);
-  AmqpClient::Envelope::ptr_t envelope = static_cast<AmqpClient::Envelope::ptr_t>(external_envelope->Value());
-  AmqpClient::Channel::ptr_t channel = static_cast<AmqpClient::Channel::ptr_t>(external_envelope->Value());
+  AmqpClient::Envelope::ptr_t* envelope = static_cast<AmqpClient::Envelope::ptr_t*>(external_envelope->Value());
+  AmqpClient::Channel::ptr_t* channel = static_cast<AmqpClient::Channel::ptr_t*>(external_envelope->Value());
   Message* obj = new Message(channel, envelope);
   obj->Wrap(info.This());
 
@@ -66,7 +66,12 @@ Message::Message(AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope:
   m_envelope = msg_envelope;
 }
 
-Message::Message() {message_ = this; testing="abc";}
+Message::Message() { }
+
+Message::Message(AmqpClient::Channel::ptr_t* channel, const AmqpClient::Envelope::ptr_t* msg_envelope) {
+  m_channel = *channel;
+  m_envelope = *msg_envelope;
+}
 
 Message::Message(std::string test) {
   testing = test;
