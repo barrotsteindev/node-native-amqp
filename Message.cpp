@@ -10,6 +10,7 @@ void Message::Init() {
   tpl->SetClassName(Nan::New("Message").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
   Nan::SetPrototypeMethod(tpl, "value", JsValue);
+  Nan::SetPrototypeMethod(tpl, "ack", JsAck);
 
   constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
 }
@@ -59,6 +60,12 @@ void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info, AmqpClient::
 void Message::JsValue(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
   info.GetReturnValue().Set(Nan::New(msg->MessageBody()).ToLocalChecked());
+}
+
+void Message::JsAck(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+  Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
+  msg->Ack();
+  info.GetReturnValue().Set(Nan::New(true));
 }
 
 Message::Message(AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope::ptr_t &msg_envelope) {

@@ -4,8 +4,9 @@ let cons = new addon.Consumer();
 
 console.log(cons.getHostname());
 
-
+let msg;
 for(let i=0; i<10; i++) {
-  let msg = cons.getMessage();
+  msg = cons.getMessage();
   console.log(msg.value());
 }
+console.log(msg.ack());

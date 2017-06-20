@@ -17,6 +17,7 @@ class Message : public Nan::ObjectWrap {
         static void JsValue(const Nan::FunctionCallbackInfo<v8::Value>& info);
         static v8::Local<v8::Object> NewInstance(v8::Local<v8::Value> arg);
         v8::Local<v8::Object> V8Instance(v8::Local<v8::Value> arg);
+        static void JsAck(const Nan::FunctionCallbackInfo<v8::Value>& info);
         void Ack(void);
         bool Valid(void);
         std::string MessageBody(void);
