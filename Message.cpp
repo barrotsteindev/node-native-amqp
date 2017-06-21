@@ -27,7 +27,7 @@ v8::Local<v8::Object> Message::NewInstance(v8::Local<v8::Value> arg) {
   return scope.Escape(instance);
 }
 
-v8::Local<v8::Object> Message::V8Instance(v8::Local<v8::Value> arg) {
+v8::Local<v8::Object> Message::V8Instance() {
   Nan::EscapableHandleScope scope;
 
   const unsigned argc = 2;
@@ -68,7 +68,7 @@ void Message::JsAck(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   info.GetReturnValue().Set(Nan::New(true));
 }
 
-Message::Message(AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope::ptr_t &msg_envelope) {
+Message::Message(AmqpClient::Channel::ptr_t &channel, const AmqpClient::Envelope::ptr_t &msg_envelope) {
   m_channel = channel;
   m_envelope = msg_envelope;
 }
@@ -78,10 +78,6 @@ Message::Message() { }
 Message::Message(AmqpClient::Channel::ptr_t* channel, const AmqpClient::Envelope::ptr_t* msg_envelope) {
   m_channel = *channel;
   m_envelope = *msg_envelope;
-}
-
-Message::Message(std::string test) {
-  testing = test;
 }
 
 void Message::Ack(void) {

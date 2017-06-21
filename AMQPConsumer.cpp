@@ -5,7 +5,8 @@ AMQPConsumer::AMQPConsumer(std::string broker_address,std::string queue_name, st
 {
     m_channel = AmqpClient::Channel::Create(broker_address);
     m_acks = m_acks;
-    m_consumer_string = m_channel->BasicConsume(queue_name, routing_key, false, m_acks, true, 10);
+    m_consumer_string = m_channel->BasicConsume(queue_name, routing_key,
+                                                true, m_acks, false, 2);
     broker_address = broker_address;
     routing_key = routing_key;
     queue_name = queue_name;
