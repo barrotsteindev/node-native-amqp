@@ -47,6 +47,7 @@ class Consumer : public Nan::ObjectWrap {
     Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
     Message* msg = obj->consumer_->Poll();
     if (!(msg->Valid())) {
+      // todo: throw exception
       return info.GetReturnValue().Set(Nan::New<v8::String>("consumer time out").ToLocalChecked());
     }
     v8::Local<v8::Object> msg_obj = msg->V8Instance();

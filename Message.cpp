@@ -11,6 +11,7 @@ void Message::Init() {
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
   Nan::SetPrototypeMethod(tpl, "value", JsValue);
   Nan::SetPrototypeMethod(tpl, "ack", JsAck);
+  Nan::SetPrototypeMethod(tpl, "reject", JsReject);
 
   constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
 }
@@ -30,9 +31,8 @@ v8::Local<v8::Object> Message::NewInstance(v8::Local<v8::Value> arg) {
 v8::Local<v8::Object> Message::V8Instance() {
   Nan::EscapableHandleScope scope;
 
-  const unsigned argc = 2;
-  v8::Local<v8::Value> argv[argc] = { Nan::New<v8::External>(&this->m_envelope),
-                                      Nan::New<v8::External>(&this->m_channel) };
+  const unsigned argc = 1;
+  v8::Local<v8::Value> argv[argc] = { Nan::New<v8::External>(this) };
   v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
   v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
 
@@ -40,11 +40,8 @@ v8::Local<v8::Object> Message::V8Instance() {
 }
 
 void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
-  v8::Handle<v8::External> external_envelope = v8::Handle<v8::External>::Cast(info[0]);
-  v8::Handle<v8::External> external_channel = v8::Handle<v8::External>::Cast(info[1]);
-  AmqpClient::Envelope::ptr_t* envelope = static_cast<AmqpClient::Envelope::ptr_t*>(external_envelope->Value());
-  AmqpClient::Channel::ptr_t* channel = static_cast<AmqpClient::Channel::ptr_t*>(external_envelope->Value());
-  Message* obj = new Message(channel, envelope);
+  v8::Handle<v8::External> external_msg = v8::Handle<v8::External>::Cast(info[0]);
+  Message* obj = static_cast<Message*>(external_msg->Value());
   obj->Wrap(info.This());
 
   info.GetReturnValue().Set(info.This());
@@ -62,6 +59,12 @@ void Message::JsValue(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   info.GetReturnValue().Set(Nan::New(msg->MessageBody()).ToLocalChecked());
 }
 
+void Message::JsReject(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+  bool toRequeue = info[0]->IsUndefined() ? true : info[0]->BooleanValue();
+  Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
+  msg->Reject(toRequeue);
+}
+
 void Message::JsAck(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
   msg->Ack();
@@ -75,13 +78,12 @@ Message::Message(AmqpClient::Channel::ptr_t &channel, const AmqpClient::Envelope
 
 Message::Message() { }
 
-Message::Message(AmqpClient::Channel::ptr_t* channel, const AmqpClient::Envelope::ptr_t* msg_envelope) {
-  m_channel = *channel;
-  m_envelope = *msg_envelope;
-}
-
 void Message::Ack(void) {
   m_channel->BasicAck(m_envelope);
+}
+
+void Message::Reject(bool requeue) {
+  m_channel->BasicReject(m_envelope, requeue);
 }
 
 bool Message::Valid(void) {
