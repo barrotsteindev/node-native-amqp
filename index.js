@@ -1,6 +1,6 @@
 const addon = require('./build/Release/addon.node');
 
-let cons = new addon.Consumer();
+let cons = new addon.Consumer({'queue': 'jobs', 'routingKey': 'jobs', 'timeOut': 1000});
 
 console.log(cons.getHostname());
 

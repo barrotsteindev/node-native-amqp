@@ -21,23 +21,70 @@ class Consumer : public Nan::ObjectWrap {
   }
 
  private:
-  explicit Consumer(v8::Local<v8::String> hostname)  {
-    Nan::Utf8String nan_string(hostname);
-    hostname_ = std::string(*nan_string);
-    AMQPConsumer *consumer = new AMQPConsumer(hostname_, "jobs", "jobs", false);
-    consumer_ = consumer;
-  }
+   static inline v8::Local<v8::String> & hostnameKey() {
+       static v8::Local<v8::String> v8Hostname = Nan::New("hostname").ToLocalChecked();
+       return v8Hostname;
+    }
+
+    static const inline v8::Local<v8::String> & localhost() {
+      static v8::Local<v8::String> v8Localhost = Nan::New("localhost").ToLocalChecked();
+      return v8Localhost;
+    }
+
+    static inline v8::Local<v8::String> & queueKey() {
+       static v8::Local<v8::String> v8Queue = Nan::New("queue").ToLocalChecked();
+       return v8Queue;
+    }
+
+    static const inline v8::Local<v8::String> & ackKey() {
+      static v8::Local<v8::String> v8Ack = Nan::New("autoAck").ToLocalChecked();
+      return v8Ack;
+    }
+
+    static const inline v8::Local<v8::String> & timeOutKey() {
+      static v8::Local<v8::String> v8timeOut = Nan::New("timeOut").ToLocalChecked();
+      return v8timeOut;
+    }
+
+    static const inline v8::Local<v8::String> & routingKey() {
+      static v8::Local<v8::String> v8RoutingKey = Nan::New("routingKey").ToLocalChecked();
+      return v8RoutingKey;
+    }
+
+    explicit Consumer(const v8::Local<v8::Object> conf) {
+      // todo: make sure object is not empty
+      if (!conf->Has(queueKey())) {
+        Nan::ThrowTypeError("Key: queue must be supllied");
+      }
+      if (!conf->Has(routingKey())) {
+        Nan::ThrowTypeError("Key: routingKey must be supllied");
+      }
+      v8::Local<v8::String> hostname = conf->Has(hostnameKey()) ? conf->Get(hostnameKey())->ToString() : localhost();
+      int timeOut = conf->Has(timeOutKey()) ? conf->Get(timeOutKey())->NumberValue() : 500;
+      v8::Local<v8::String> v8Queue = conf->Get(queueKey())->ToString();
+      v8::Local<v8::String> v8RoutingKey = conf->Get(routingKey())->ToString();
+      Nan::Utf8String utfHostname(hostname);
+      hostname_ = std::string(*utfHostname);
+      Nan::Utf8String utfQueue(v8Queue);
+      Nan::Utf8String utfRoutingKey(v8RoutingKey);
+      hostname_ = std::string(*utfHostname);
+      AMQPConsumer *consumer = new AMQPConsumer(hostname_, std::string(*utfQueue), std::string(*utfRoutingKey), false);
+      consumer_ = consumer;
+    }
+
   ~Consumer() {}
 
   static NAN_METHOD(New) {
-    if (info.IsConstructCall()) {
-      v8::Local<v8::String> firstArg = info[0]->IsUndefined() ? Nan::New<v8::String>("localhost").ToLocalChecked() : info[0]->ToString();
-      Consumer *obj = new Consumer(firstArg);
+    if (!info[0]->IsObject()) {
+      Nan::ThrowTypeError("Consumer configuration must be a json object");
+    } else if (info.IsConstructCall()) {
+      v8::Local<v8::Object> conf = info[0]->ToObject();
+      Consumer *obj = new Consumer(conf);
       obj->Wrap(info.This());
       info.GetReturnValue().Set(info.This());
     } else {
       const int argc = 1;
-      v8::Local<v8::Value> argv[argc] = {info[0]->ToString()};
+      v8::Local<v8::Value> argv[argc] = {info[0]->ToObject()};
       v8::Local<v8::Function> cons = Nan::New(constructor());
       info.GetReturnValue().Set(cons->NewInstance(argc, argv));
     }
@@ -47,7 +94,7 @@ class Consumer : public Nan::ObjectWrap {
     Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
     Message* msg = obj->consumer_->Poll();
     if (!(msg->Valid())) {
-      // todo: throw exception
+      Nan::ThrowReferenceError("Consumer time out");
       return info.GetReturnValue().Set(Nan::New<v8::String>("consumer time out").ToLocalChecked());
     }
     v8::Local<v8::Object> msg_obj = msg->V8Instance();
