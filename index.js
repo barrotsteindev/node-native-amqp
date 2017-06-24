@@ -1,10 +1,21 @@
 const addon = require('./build/Release/addon.node');
 
-let cons = new addon.Consumer();
+let consumer = new addon.Consumer({'queue': 'jobs', 'routingKey': 'jobs', 'timeOut': 1000});
+//let cons = new addon.Consumer({});
 
-console.log(cons.getHostname());
+console.log(consumer.getHostname());
 
-
-for(let i=0; i<10; i++) {
-  console.log(cons.getMessage());
+for(let i=0; true; i++) {
+  if (i === 10000) {
+    consumer.close();
+    process.exit();
+  }
+  let msg = consumer.getMessage();
+  try {
+    console.log(msg.value());
+    //msg.reject();
+    msg.ack();
+  } catch (e) {
+    console.log(msg);
+  }
 }
