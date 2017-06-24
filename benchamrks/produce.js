@@ -14,12 +14,8 @@ connection.on('error', function(e) {
 connection.on('ready', function() {
   console.log('Connection established');
   var i = 0;
-  while (i < 1000) {
+  while (i < 10000) {
       connection.publish('jobs', 'test', {}, function(err) {
-          console.log(i);
-          if(i == 998) {
-              process.exit();
-          }
       });
       i++;
   }

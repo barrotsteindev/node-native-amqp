@@ -14,6 +14,7 @@ class Consumer : public Nan::ObjectWrap {
     Nan::SetPrototypeMethod(tpl, "getHandle", GetHandle);
     Nan::SetPrototypeMethod(tpl, "getHostname", GetHostname);
     Nan::SetPrototypeMethod(tpl, "getMessage", GetMessage);
+    Nan::SetPrototypeMethod(tpl, "close", Close);
 
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
     Nan::Set(target, Nan::New("Consumer").ToLocalChecked(),
@@ -51,6 +52,11 @@ class Consumer : public Nan::ObjectWrap {
       return v8RoutingKey;
     }
 
+    static const inline v8::Local<v8::String> & prefetchKey() {
+      static v8::Local<v8::String> v8PrefetchKey = Nan::New("prefetch").ToLocalChecked();
+      return v8PrefetchKey;
+    }
+
     explicit Consumer(const v8::Local<v8::Object> conf) {
       // todo: make sure object is not empty
       if (!conf->Has(queueKey())) {
@@ -61,6 +67,7 @@ class Consumer : public Nan::ObjectWrap {
       }
       v8::Local<v8::String> hostname = conf->Has(hostnameKey()) ? conf->Get(hostnameKey())->ToString() : localhost();
       int timeOut = conf->Has(timeOutKey()) ? conf->Get(timeOutKey())->NumberValue() : 500;
+      int prefetchCount = conf->Has(prefetchKey()) ? conf->Get(prefetchKey())->NumberValue() : 10;
       v8::Local<v8::String> v8Queue = conf->Get(queueKey())->ToString();
       v8::Local<v8::String> v8RoutingKey = conf->Get(routingKey())->ToString();
       Nan::Utf8String utfHostname(hostname);
@@ -68,7 +75,13 @@ class Consumer : public Nan::ObjectWrap {
       Nan::Utf8String utfQueue(v8Queue);
       Nan::Utf8String utfRoutingKey(v8RoutingKey);
       hostname_ = std::string(*utfHostname);
-      AMQPConsumer *consumer = new AMQPConsumer(hostname_, std::string(*utfQueue), std::string(*utfRoutingKey), false);
+      AMQPConsumer *consumer;
+      try {
+          consumer = new AMQPConsumer(hostname_, std::string(*utfQueue), std::string(*utfRoutingKey), false, prefetchCount);
+      } catch (...) {
+          std::string exceptionString = "could not connect to host: " + hostname_;
+          Nan::ThrowError(exceptionString.c_str());
+      }
       consumer_ = consumer;
     }
 
@@ -88,6 +101,11 @@ class Consumer : public Nan::ObjectWrap {
       v8::Local<v8::Function> cons = Nan::New(constructor());
       info.GetReturnValue().Set(cons->NewInstance(argc, argv));
     }
+  }
+
+  static NAN_METHOD(Close) {
+    Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
+    obj->consumer_->Close();
   }
 
   static NAN_METHOD(GetMessage) {
