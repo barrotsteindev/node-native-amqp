@@ -106,6 +106,7 @@ class Consumer : public Nan::ObjectWrap {
   static NAN_METHOD(Close) {
     Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
     obj->consumer_->Close();
+    delete obj->consumer_;
   }
 
   static NAN_METHOD(GetMessage) {

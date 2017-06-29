@@ -4,3 +4,4 @@ cpp_test/test_amqp/bin/
 benchamrks/node-amqp/node_modules/
 node_modules/
 build/
+*package-lock.json*

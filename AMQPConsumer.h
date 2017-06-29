@@ -27,7 +27,6 @@ class AMQPConsumer {
     private:
         std::string m_consumer_string;
         AmqpClient::Channel::ptr_t m_channel;
-        AmqpClient::Channel::ptr_t m_cur_msg;
 };
 
 #endif // AMQPCONSUMER_H
