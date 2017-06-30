@@ -15,7 +15,8 @@ connection.on('ready', function() {
   console.log('Connection established');
   var i = 0;
   while (i < 10000) {
-      connection.publish('jobs', 'test', {}, function(err) {
+      connection.publish('jobs', Math.random().toString(36).substr(2, 10),
+                         {}, function(err) {
       });
       i++;
   }
