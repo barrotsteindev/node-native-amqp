@@ -139,7 +139,7 @@ class Consumer : public Nan::ObjectWrap {
   }
 
   static NAN_METHOD(GetMessage) {
-    Nan::Callback *callback = new Nan::Callback(info[1].As<v8::Function>());
+    Nan::Callback *callback = new Nan::Callback(info[0].As<v8::Function>());
     Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
     Nan::AsyncQueueWorker(new ConsumerWorker(callback, obj->_consumer));
   }

@@ -24,7 +24,14 @@ Message* AMQPConsumer::Poll() {
     m_channel->BasicConsumeMessage(m_consumer_string, msg, 1000);
     Message* msg_obj = new Message(m_channel, msg);
     return msg_obj;
-}
+ }
+
+// Message* AMQPConsumer::Poll() {
+//     AmqpClient::Envelope::ptr_t msg = NULL;
+//     m_channel->BasicGet(msg, "jobs", false);
+//     Message* msg_obj = new Message(m_channel, msg);
+//     return msg_obj;
+// }
 
 void AMQPConsumer::Close() {
     m_channel->BasicCancel(m_consumer_string);
