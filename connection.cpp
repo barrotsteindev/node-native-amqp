@@ -100,7 +100,9 @@ class Consumer : public Nan::ObjectWrap {
       _consumer = consumer;
     }
 
-  ~Consumer() {}
+  ~Consumer() {
+    delete obj->consumer_;
+  }
 
   static NAN_METHOD(New) {
     if (!info[0]->IsObject()) {
