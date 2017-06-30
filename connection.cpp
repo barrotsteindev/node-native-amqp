@@ -77,7 +77,7 @@ class Consumer : public Nan::ObjectWrap {
                                        localhost();
       int timeOut = conf->Has(timeOutKey()) ?
                     conf->Get(timeOutKey())->NumberValue() :
-                    500;
+                    200;
       int prefetchCount = conf->Has(prefetchKey()) ?
                           conf->Get(prefetchKey())->NumberValue() :
                           10;
@@ -92,7 +92,7 @@ class Consumer : public Nan::ObjectWrap {
       try {
           consumer = new AMQPConsumer(_hostname, std::string(*utfQueue),
                                       std::string(*utfRoutingKey),
-                                      false, prefetchCount);
+                                      false, prefetchCount, timeOut);
       } catch (...) {
           std::string exceptionString = "could not connect to host: "
                                         + _hostname;
