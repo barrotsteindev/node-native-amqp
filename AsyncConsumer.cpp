@@ -1,4 +1,5 @@
 #include <nan.h>
+<<<<<<< HEAD
 #include "AsyncConsumer.h"
 #include "Message.h"
 #include "AMQPConsumer.h"
@@ -19,5 +20,5 @@ void HandleOKCallback() {
     v8::Local<v8::Object> msg_obj = _message->V8Instance();
     v8::Local<Value> argv[] = { msg_obj };
     callback->Call(1, argv);
-  }
+ }
 }
