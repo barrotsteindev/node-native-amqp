@@ -2,6 +2,7 @@
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
 #include "Message.h"
 #include "AMQPConsumer.h"
+#include "AsyncConsumer.h"
 
 class Consumer : public Nan::ObjectWrap {
  public:

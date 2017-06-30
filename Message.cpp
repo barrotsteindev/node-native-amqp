@@ -40,14 +40,17 @@ v8::Local<v8::Object> Message::V8Instance() {
 }
 
 void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
-  v8::Handle<v8::External> external_msg = v8::Handle<v8::External>::Cast(info[0]);
+  v8::Handle<v8::External> external_msg = v8::Handle<v8::External>::Cast
+                                          (info[0]);
   Message* obj = static_cast<Message*>(external_msg->Value());
   obj->Wrap(info.This());
 
   info.GetReturnValue().Set(info.This());
 }
 
-void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info, AmqpClient::Channel::ptr_t channel, const AmqpClient::Envelope::ptr_t &msg_envelope) {
+void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info,
+                  AmqpClient::Channel::ptr_t channel,
+                  const AmqpClient::Envelope::ptr_t &msg_envelope) {
   Message* obj = new Message(channel, msg_envelope);
   obj->Wrap(info.This());
 
@@ -71,7 +74,8 @@ void Message::JsAck(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   info.GetReturnValue().Set(Nan::New(true));
 }
 
-Message::Message(AmqpClient::Channel::ptr_t &channel, const AmqpClient::Envelope::ptr_t &msg_envelope) {
+Message::Message(AmqpClient::Channel::ptr_t &channel,
+                 const AmqpClient::Envelope::ptr_t &msg_envelope) {
   m_channel = channel;
   m_envelope = msg_envelope;
 }
