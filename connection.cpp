@@ -14,7 +14,7 @@ class Consumer : public Nan::ObjectWrap {
 
     Nan::SetPrototypeMethod(tpl, "getHandle", GetHandle);
     Nan::SetPrototypeMethod(tpl, "getHostname", GetHostname);
-    Nan::SetPrototypeMethod(tpl, "getMessage", GetMessage);
+    Nan::SetPrototypeMethod(tpl, "getMessageSync", GetMessageSync);
     Nan::SetPrototypeMethod(tpl, "close", Close);
 
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
@@ -101,7 +101,6 @@ class Consumer : public Nan::ObjectWrap {
     }
 
   ~Consumer() {
-    delete obj->consumer_;
   }
 
   static NAN_METHOD(New) {
@@ -126,7 +125,7 @@ class Consumer : public Nan::ObjectWrap {
     delete obj->_consumer;
   }
 
-  static NAN_METHOD(GetMessage) {
+  static NAN_METHOD(GetMessageSync) {
     Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
     Message* msg = obj->_consumer->Poll();
     if (!(msg->Valid())) {

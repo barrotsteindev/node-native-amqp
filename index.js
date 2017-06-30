@@ -11,11 +11,11 @@ for(let i=0; true; i++) {
     consumer.close();
     process.exit();
   }
-  let msg = consumer.getMessage();
+  let msg = consumer.getMessageSync();
   try {
     console.log(msg.value());
-    //msg.reject();
-    msg.ack();
+    msg.reject();
+    //msg.ack();
   } catch (e) {
     console.log(msg);
   }

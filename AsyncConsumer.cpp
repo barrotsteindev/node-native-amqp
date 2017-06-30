@@ -9,13 +9,15 @@ ConsumerWorker(Callback * callback, int timeout)
 }
 // Executes in worker thread
 void Execute() {
+  _message = obj->_consumer->Poll();
 }
 // Executes in event loop
 void HandleOKCallback() {
-    Local<Array> results = New<Array>(primes.size());
-    for ( unsigned int i = 0; i < primes.size(); i++ ) {
-        Nan::Set(results, i, New<v8::Number>(primes[i]));
-    }
-    Local<Value> argv[] = { results };
+  if (!_message->Valid()) {
+    callback->Call("Consumer time out", NULL);
+  } else {
+    v8::Local<v8::Object> msg_obj = _message->V8Instance();
+    v8::Local<Value> argv[] = { msg_obj };
     callback->Call(1, argv);
+  }
 }
