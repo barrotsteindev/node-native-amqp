@@ -7,16 +7,25 @@ let consumer = new addon.Consumer({ 'queue': 'jobs',
 console.log(consumer.getHostname());
 
 for(let i=0; true; i++) {
-  if (i === 100) {
-    consumer.close();
-    process.exit();
-  }
-  let msg = consumer.getMessageSync();
-  try {
+  // if (i === 10) {
+  //   consumer.close();
+  //   process.exit();
+  // }
+  consumer.getMessage(function(err, msg) {
+    console.log("callback");
+    // if (err) {
+    //   console.log("err: " + err);
+    // } else {
+    //   console.log(msg.value());
+    // }
     console.log(msg.value());
-    msg.reject();
-    //msg.ack();
-  } catch (e) {
-    console.log(msg);
-  }
+  });
+  // let msg = consumer.getMessageSync();
+  // try {
+  //   console.log(msg.value());
+  //   msg.reject();
+  //   //msg.ack();
+  // } catch (e) {
+  //   console.log(msg);
+  // }
 }

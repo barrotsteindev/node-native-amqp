@@ -15,6 +15,7 @@ class Consumer : public Nan::ObjectWrap {
     Nan::SetPrototypeMethod(tpl, "getHandle", GetHandle);
     Nan::SetPrototypeMethod(tpl, "getHostname", GetHostname);
     Nan::SetPrototypeMethod(tpl, "getMessageSync", GetMessageSync);
+    Nan::SetPrototypeMethod(tpl, "getMessage", GetMessage);
     Nan::SetPrototypeMethod(tpl, "close", Close);
 
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
@@ -135,6 +136,12 @@ class Consumer : public Nan::ObjectWrap {
     }
     v8::Local<v8::Object> msg_obj = msg->V8Instance();
     info.GetReturnValue().Set(msg_obj);
+  }
+
+  static NAN_METHOD(GetMessage) {
+    Nan::Callback *callback = new Nan::Callback(info[1].As<v8::Function>());
+    Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
+    Nan::AsyncQueueWorker(new ConsumerWorker(callback, obj->_consumer));
   }
 
   static NAN_METHOD(GetHandle) {

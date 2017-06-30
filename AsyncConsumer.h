@@ -7,7 +7,7 @@
 
 class ConsumerWorker : public Nan::AsyncWorker {
  public:
-    ConsumerWorker(Nan::Callback * callback, int timeout);
+    ConsumerWorker(Nan::Callback * callback, AMQPConsumer* consumer);
     void Execute();
     void HandleOKCallback();
  private:

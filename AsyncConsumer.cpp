@@ -1,24 +1,27 @@
 #include <nan.h>
-<<<<<<< HEAD
 #include "AsyncConsumer.h"
 #include "Message.h"
 #include "AMQPConsumer.h"
+#include <iostream>
+#include <stdlib.h>
 
-
-ConsumerWorker(Callback * callback, int timeout)
-  : Nan::AsyncWorker(callback), _timeout(timeout) {
+ConsumerWorker::ConsumerWorker(Nan::Callback * callback, AMQPConsumer* consumer)
+  : Nan::AsyncWorker(callback) {
+    _consumer = consumer;
 }
 // Executes in worker thread
-void Execute() {
-  _message = obj->_consumer->Poll();
+void ConsumerWorker::Execute() {
+  _message = _consumer->Poll();
+  std::cout << " text: " << _message->MessageBody() << std::endl;
 }
 // Executes in event loop
-void HandleOKCallback() {
+void ConsumerWorker::HandleOKCallback() {
   if (!_message->Valid()) {
-    callback->Call("Consumer time out", NULL);
+    v8::Local<v8::Value> argv[] = { Nan::New("Consumer time out").ToLocalChecked(),
+                                    Nan::Null() };
   } else {
     v8::Local<v8::Object> msg_obj = _message->V8Instance();
-    v8::Local<Value> argv[] = { msg_obj };
-    callback->Call(1, argv);
- }
+    v8::Local<v8::Value> argv[] = { Nan::Null(), msg_obj };
+    callback->Call(2, argv);
+  }
 }
