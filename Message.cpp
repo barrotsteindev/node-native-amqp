@@ -66,11 +66,13 @@ void Message::JsReject(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   bool toRequeue = info[0]->IsUndefined() ? true : info[0]->BooleanValue();
   Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
   msg->Reject(toRequeue);
+  msg->MakeWeak();
 }
 
 void Message::JsAck(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
   msg->Ack();
+  msg->MakeWeak();
   info.GetReturnValue().Set(Nan::New(true));
 }
 

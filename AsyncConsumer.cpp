@@ -17,6 +17,7 @@ void ConsumerWorker::HandleOKCallback() {
   if (!_message->Valid()) {
     v8::Local<v8::Value> argv[] = { Nan::New("Consumer time out")
                                     .ToLocalChecked(), Nan::Null() };
+    delete _message;
     callback->Call(2, argv);
   } else {
     v8::Local<v8::Object> msg_obj = _message->V8Instance();
