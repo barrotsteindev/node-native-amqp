@@ -15,8 +15,6 @@ function consumeAsync() {
   });
 }
 
-console.log(consumer.getHostname());
-
-for(let i = 0; i < 1000; i++) {
+for(let i = 0; i < 10000; i++) {
   setImmediate(consumeAsync);
 }

@@ -11,7 +11,6 @@ class ConsumerWorker : public Nan::AsyncWorker {
     void Execute();
     void HandleOKCallback();
  private:
-    bool _error;
     Message* _message;
     AMQPConsumer* _consumer;
 };

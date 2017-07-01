@@ -5,6 +5,15 @@ var hostName = process.argv[2] || "localhost";
 
 ///Create a connection to your RabbitMQ
 var connection = amqp.createConnection({host: hostName});
+let i = 0;
+
+function publishRandomMsg() {
+  connection.publish('jobs', Math.random().toString(36).substr(2, 10),
+                     {}, function(err) {
+                       console.log(i);
+                       if (i + 1 === 10000) { connection.close(); }
+  });
+}
 
 connection.on('error', function(e) {
   console.log(e);
@@ -13,11 +22,8 @@ connection.on('error', function(e) {
 ///Connection is ready
 connection.on('ready', function() {
   console.log('Connection established');
-  var i = 0;
   while (i < 10000) {
-      connection.publish('jobs', Math.random().toString(36).substr(2, 10),
-                         {}, function(err) {
-      });
+      setImmediate(publishRandomMsg);
       i++;
   }
 });
