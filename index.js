@@ -9,7 +9,7 @@ function consumeAsync() {
     if (err) {
       console.log('err: ' + err);
     } else {
-      console.log(msg.value());
+      console.log(msg.value().toString());
       msg.ack();
     }
   });

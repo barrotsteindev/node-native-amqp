@@ -3,6 +3,7 @@
 
 #include <nan.h>
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
+#include <amqp.h>
 #include <string>
 
 

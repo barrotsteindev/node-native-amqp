@@ -1,5 +1,4 @@
 #include "AMQPConsumer.h"
-#include <SimpleAmqpClient/SimpleAmqpClient.h>
 
 AMQPConsumer::AMQPConsumer(std::string broker_address, std::string queue_name,
   std::string routing_key, bool m_acks, int prefetchCount, int timeout) {

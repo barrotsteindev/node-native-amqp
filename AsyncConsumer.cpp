@@ -1,7 +1,4 @@
-#include <nan.h>
 #include "AsyncConsumer.h"
-#include "Message.h"
-#include "AMQPConsumer.h"
 #include <iostream>
 
 ConsumerWorker::ConsumerWorker(Nan::Callback * callback, AMQPConsumer* consumer)

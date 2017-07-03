@@ -1,6 +1,4 @@
 #include "Message.h"
-#include <SimpleAmqpClient/SimpleAmqpClient.h>
-#include <nan.h>
 
 Nan::Persistent<v8::Function> Message::constructor;
 
@@ -57,9 +55,17 @@ void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info,
   info.GetReturnValue().Set(info.This());
 }
 
+// amqp_bytes_t Message::GetAmqpBody() {
+//   return msg->_messagegetAmqpBody();
+// }
+
 void Message::JsValue(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
-  info.GetReturnValue().Set(Nan::New(msg->MessageBody()).ToLocalChecked());
+  int msg_len = msg->m_envelope->Message()->getAmqpBody().len;
+  void * msg_bytes = malloc(msg_len);
+  memcpy(msg_bytes, msg->m_envelope->Message()->getAmqpBody().bytes, msg_len);
+  info.GetReturnValue().Set(Nan::NewBuffer(static_cast<char *>(msg_bytes),
+                                           msg_len).ToLocalChecked());
 }
 
 void Message::JsReject(const Nan::FunctionCallbackInfo<v8::Value>& info) {
