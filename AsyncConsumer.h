@@ -7,12 +7,12 @@
 
 class ConsumerWorker : public Nan::AsyncWorker {
  public:
-    ConsumerWorker(Nan::Callback * callback, AMQPConsumer* consumer);
+    ConsumerWorker(Nan::Callback * callback, AMQPConsumer & consumer);
     void Execute();
     void HandleOKCallback();
  private:
-    Message* _message;
-    AMQPConsumer* _consumer;
+    Message * _message;
+    AMQPConsumer & _consumer;
 };
 
 #endif  // ASYNCCONSUMER_H

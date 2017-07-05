@@ -29,7 +29,7 @@ class AMQPConsumer {
                                                   m_acks = true;
                                                 }
   virtual ~AMQPConsumer();
-  Message* Poll();
+  Message * Poll();
   void Close();
 
  private:

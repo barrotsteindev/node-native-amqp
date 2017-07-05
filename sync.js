@@ -6,7 +6,7 @@ let consumer = new addon.Consumer({ 'queue': 'jobs',
 
 function consumeSync() {
   let msg = consumer.getMessageSync();
-  console.log(msg.value());
+  console.log(msg.value().toString());
   msg.ack();
 }
 

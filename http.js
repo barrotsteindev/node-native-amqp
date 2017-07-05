@@ -4,8 +4,8 @@ const app = express();
 const port = 3000;
 
 const consumer = new addon.Consumer({ 'queue': 'jobs',
-                                    'routingKey': 'jobs',
-                                    'timeOut': 250 });
+                                      'routingKey': 'jobs',
+                                      'timeOut': 250 });
 
 app.all('/', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -22,7 +22,7 @@ app.get('/', (request, response) => {
       response.send(`${msg.value()}\n`);
     }
   });
-})
+});
 
 app.listen(port, '0.0.0.0', (err) => {
   if (err) {

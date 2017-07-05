@@ -8,7 +8,8 @@ var connection = amqp.createConnection({host: hostName});
 let i = 0;
 
 function publishRandomMsg() {
-  connection.publish('jobs', Math.random().toString(36).substr(2, 10),
+  let randMsg = Math.random().toString(36).substr(2, 10);
+  connection.publish('jobs', 'test',
                      {}, function(err) {
                        console.log(i);
                        if (i + 1 === 10000) { connection.close(); }

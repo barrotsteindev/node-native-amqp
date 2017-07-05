@@ -37,7 +37,7 @@ v8::Local<v8::Object> Message::V8Instance() {
   return scope.Escape(instance);
 }
 
-void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+void Message::New(const Nan::FunctionCallbackInfo<v8::Value> & info) {
   v8::Handle<v8::External> external_msg = v8::Handle<v8::External>::Cast
                                           (info[0]);
   Message* obj = static_cast<Message*>(external_msg->Value());
@@ -46,21 +46,17 @@ void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   info.GetReturnValue().Set(info.This());
 }
 
-void Message::New(const Nan::FunctionCallbackInfo<v8::Value>& info,
+void Message::New(const Nan::FunctionCallbackInfo<v8::Value> & info,
                   AmqpClient::Channel::ptr_t channel,
-                  const AmqpClient::Envelope::ptr_t &msg_envelope) {
+                  const AmqpClient::Envelope::ptr_t & msg_envelope) {
   Message* obj = new Message(channel, msg_envelope);
   obj->Wrap(info.This());
 
   info.GetReturnValue().Set(info.This());
 }
 
-// amqp_bytes_t Message::GetAmqpBody() {
-//   return msg->_messagegetAmqpBody();
-// }
-
-void Message::JsValue(const Nan::FunctionCallbackInfo<v8::Value>& info) {
-  Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
+void Message::JsValue(const Nan::FunctionCallbackInfo<v8::Value> & info) {
+  Message * msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
   int msg_len = msg->m_envelope->Message()->getAmqpBody().len;
   void * msg_bytes = malloc(msg_len);
   memcpy(msg_bytes, msg->m_envelope->Message()->getAmqpBody().bytes, msg_len);
@@ -68,22 +64,22 @@ void Message::JsValue(const Nan::FunctionCallbackInfo<v8::Value>& info) {
                                            msg_len).ToLocalChecked());
 }
 
-void Message::JsReject(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+void Message::JsReject(const Nan::FunctionCallbackInfo<v8::Value> & info) {
   bool toRequeue = info[0]->IsUndefined() ? true : info[0]->BooleanValue();
-  Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
+  Message * msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
   msg->Reject(toRequeue);
   msg->MakeWeak();
 }
 
-void Message::JsAck(const Nan::FunctionCallbackInfo<v8::Value>& info) {
-  Message* msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
+void Message::JsAck(const Nan::FunctionCallbackInfo<v8::Value> & info) {
+  Message * msg = Nan::ObjectWrap::Unwrap<Message>(info.Holder());
   msg->Ack();
   msg->MakeWeak();
   info.GetReturnValue().Set(Nan::New(true));
 }
 
-Message::Message(AmqpClient::Channel::ptr_t &channel,
-                 const AmqpClient::Envelope::ptr_t &msg_envelope) {
+Message::Message(const AmqpClient::Channel::ptr_t & channel,
+                 const AmqpClient::Envelope::ptr_t & msg_envelope) {
   m_channel = channel;
   m_envelope = msg_envelope;
 }
@@ -105,7 +101,6 @@ bool Message::Valid(void) {
 std::string Message::MessageBody(void) {
   return m_envelope->Message()->Body();
 }
-
 
 Message::~Message() {
     // dtor

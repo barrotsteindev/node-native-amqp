@@ -19,12 +19,15 @@ AMQPConsumer::~AMQPConsumer() {
     // dtor
 }
 
-Message* AMQPConsumer::Poll() {
+Message * AMQPConsumer::Poll() {
     AmqpClient::Envelope::ptr_t msg;
     AMQPConsumer::_consume_lock.lock();
     m_channel->BasicConsumeMessage(m_consumer_string, msg, m_timeout);
     AMQPConsumer::_consume_lock.unlock();
-    Message* msg_obj = new Message(m_channel, msg);
+    if (msg == NULL) {
+      return NULL;
+    }
+    Message * msg_obj = new Message(m_channel, msg);
     return msg_obj;
 }
 

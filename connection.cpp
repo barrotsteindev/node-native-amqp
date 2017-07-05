@@ -84,14 +84,14 @@ class Consumer : public Nan::ObjectWrap {
       v8::Local<v8::String> v8Queue = conf->Get(queueKey())->ToString();
       v8::Local<v8::String> v8RoutingKey = conf->Get(routingKey())->ToString();
       Nan::Utf8String utfHostname(hostname);
-      _hostname = std::string(*utfHostname);
+      _hostname = std::string(* utfHostname);
       Nan::Utf8String utfQueue(v8Queue);
       Nan::Utf8String utfRoutingKey(v8RoutingKey);
-      _hostname = std::string(*utfHostname);
-      AMQPConsumer *consumer;
+      _hostname = std::string(* utfHostname);
+      AMQPConsumer * consumer;
       try {
-          consumer = new AMQPConsumer(_hostname, std::string(*utfQueue),
-                                      std::string(*utfRoutingKey),
+          consumer = new AMQPConsumer(_hostname, std::string(* utfQueue),
+                                      std::string(* utfRoutingKey),
                                       false, prefetchCount, timeOut);
       } catch (...) {
           std::string exceptionString = "could not connect to host: "
@@ -109,7 +109,7 @@ class Consumer : public Nan::ObjectWrap {
       Nan::ThrowTypeError("Consumer configuration must be a json object");
     } else if (info.IsConstructCall()) {
       v8::Local<v8::Object> conf = info[0]->ToObject();
-      Consumer *obj = new Consumer(conf);
+      Consumer * obj = new Consumer(conf);
       obj->Wrap(info.This());
       info.GetReturnValue().Set(info.This());
     } else {
@@ -121,14 +121,13 @@ class Consumer : public Nan::ObjectWrap {
   }
 
   static NAN_METHOD(Close) {
-    Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
+    Consumer * obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
     obj->_consumer->Close();
-    delete obj->_consumer;
   }
 
   static NAN_METHOD(GetMessageSync) {
-    Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
-    Message* msg = obj->_consumer->Poll();
+    Consumer * obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
+    Message * msg = obj->_consumer->Poll();
     if (!(msg->Valid())) {
       Nan::ThrowReferenceError("Consumer time out");
       return info.GetReturnValue().Set(Nan::New<v8::String>
@@ -139,18 +138,18 @@ class Consumer : public Nan::ObjectWrap {
   }
 
   static NAN_METHOD(GetMessage) {
-    Nan::Callback *callback = new Nan::Callback(info[0].As<v8::Function>());
-    Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
-    Nan::AsyncQueueWorker(new ConsumerWorker(callback, obj->_consumer));
+    Nan::Callback * callback = new Nan::Callback(info[0].As<v8::Function>());
+    Consumer * obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
+    Nan::AsyncQueueWorker(new ConsumerWorker(callback, * obj->_consumer));
   }
 
   static NAN_METHOD(GetHandle) {
-    Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
+    Consumer * obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
     info.GetReturnValue().Set(obj->handle());
   }
 
   static NAN_METHOD(GetHostname) {
-    Consumer* obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
+    Consumer * obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
     info.GetReturnValue().Set(Nan::New(obj->_hostname).ToLocalChecked());
   }
 
@@ -160,7 +159,7 @@ class Consumer : public Nan::ObjectWrap {
   }
 
   std::string _hostname;
-  AMQPConsumer* _consumer;
+  AMQPConsumer * _consumer;
 };
 
 NODE_MODULE(objectwrapper, Consumer::Init)
