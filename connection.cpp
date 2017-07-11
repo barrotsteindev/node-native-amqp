@@ -123,6 +123,7 @@ class Consumer : public Nan::ObjectWrap {
   static NAN_METHOD(Close) {
     Consumer * obj = Nan::ObjectWrap::Unwrap<Consumer>(info.Holder());
     obj->_consumer->Close();
+    info.GetReturnValue().Set(Nan::Null());
   }
 
   static NAN_METHOD(GetMessageSync) {
