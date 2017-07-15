@@ -11,8 +11,9 @@ before_install:
   - docker build ./e2e/producer -t rabbit-producer:latest
   - docker run --network=amqp-net --env AMQP_HOST=rabbitmq rabbit-producer:latest
   - docker build . -t amqp-http-wrapper:latest
-  - docker run -d --name amqp-producer --network=amqp-net --env AMQP_HOST=rabbitmq -p 3000:3000 amqp-http-wrapper:latest
+  - docker run -d --name http-amqp --network=amqp-net --env AMQP_HOST=rabbitmq -p 3000:3000 amqp-http-wrapper:latest
   - cd e2e/http-tester && npm install
 
 script:
+  - sudo docker ps -a
   - sleep 10s && npm start
