@@ -10,4 +10,4 @@ before_install:
   - cd e2e/http-tester && npm install
 
 script:
-  - npm start
+  - node index.js
