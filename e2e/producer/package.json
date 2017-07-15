@@ -1,0 +1,15 @@
+{
+  "name": "amqp-producer",
+  "version": "1.0.0",
+  "description": "produce messages to rabiitmq",
+  "main": "produce.js",
+  "dependencies": {
+    "amqp": "^0.2.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node produce.js $AMQP_HOST"
+  },
+  "author": "",
+  "license": "ISC"
+}

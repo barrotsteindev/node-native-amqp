@@ -4,7 +4,6 @@
   "description": "test api",
   "main": "index.js",
   "dependencies": {
-    "amqp": "^0.2.6",
     "loadtest": "^2.3.0",
     "request": "^2.81.0"
   },

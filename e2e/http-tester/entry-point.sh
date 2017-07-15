@@ -1,3 +1,3 @@
-sleep 35s
-node produce.js $AMQP_HOST
+sleep 20s
 npm start
+curl -XDELETE http://$API_HOST:3000/

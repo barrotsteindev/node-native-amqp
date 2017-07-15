@@ -1,13 +1,19 @@
 version: '2'
 services:
+  rabbit-producer:
+    build: ./e2e/producer
+    environment:
+      - AMQP_HOST=rabbitmq
+    depends_on:
+      - "rabbitmq"
   http-tester:
     build: ./e2e/http-tester
     environment:
       - API_HOST=native-amqp
-      - AMQP_HOST=rabbitmq
     depends_on:
-      - "native-amqp"
+      - "rabbit-producer"
       - "rabbitmq"
+      - "native-amqp"
   native-amqp:
     build: .
     ports:
@@ -15,7 +21,7 @@ services:
     environment:
       - AMQP_HOST=rabbitmq
     depends_on:
-      - "rabbitmq"
+      - "rabbit-producer"
   rabbitmq:
     image: "rabbitmq:3-management"
     ports:

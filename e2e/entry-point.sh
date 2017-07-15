@@ -1,2 +1,2 @@
-sleep 30s
+sleep 20s
 npm start
