@@ -6,14 +6,14 @@ services:
       - AMQP_HOST=rabbitmq
     depends_on:
       - "rabbitmq"
-  http-tester:
-    build: ./e2e/http-tester
-    environment:
-      - API_HOST=native-amqp
-    depends_on:
-      - "rabbit-producer"
-      - "rabbitmq"
-      - "native-amqp"
+  # http-tester:
+  #   build: ./e2e/http-tester
+  #   environment:
+  #     - API_HOST=native-amqp
+  #   depends_on:
+  #     - "rabbit-producer"
+  #     - "rabbitmq"
+  #     - "native-amqp"
   native-amqp:
     build: .
     ports:
