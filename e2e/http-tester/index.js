@@ -3,6 +3,7 @@ const request = require('request');
 const maxRequests = process.argv[3] || 1000;
 const url = process.argv[2] || 'localhost';
 const httpUrl = `http://${url}:3000/`;
+console.log(`testing: ${httpUrl}`);
 const testOptions = {
   'url': httpUrl,
   'maxRequests': maxRequests

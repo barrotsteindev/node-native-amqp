@@ -4,12 +4,13 @@
   "description": "test api",
   "main": "index.js",
   "dependencies": {
-    "loadtest": "*",
+    "amqp": "^0.2.6",
+    "loadtest": "^2.3.0",
     "request": "^2.81.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js $AMQP_HOST"
+    "start": "node index.js $API_HOST"
   },
   "author": "",
   "license": "ISC"

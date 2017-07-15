@@ -1,2 +1,2 @@
-node produce.js $AMQP_HOST
+sleep 30s
 npm start

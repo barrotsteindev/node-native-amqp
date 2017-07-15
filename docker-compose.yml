@@ -1,5 +1,13 @@
 version: '2'
 services:
+  http-tester:
+    build: ./e2e/http-tester
+    environment:
+      - API_HOST=native-amqp
+      - AMQP_HOST=rabbitmq
+    depends_on:
+      - "native-amqp"
+      - "rabbitmq"
   native-amqp:
     build: .
     ports:
