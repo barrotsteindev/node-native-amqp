@@ -1,4 +1,5 @@
 const loadTest = require('loadtest').loadTest;
+const request = require('request');
 const maxRequests = process.argv[3] || 1000;
 const url = process.argv[2] || 'localhost';
 const httpUrl = `http://${url}:3000/`;
@@ -6,6 +7,16 @@ const testOptions = {
   'url': httpUrl,
   'maxRequests': maxRequests
 };
+
+function killApi() {
+  console.log('killing');
+  request.del(httpUrl, (error) => {
+    if(error) {
+      console.error(`could not close api ${error}`);
+    }
+    console.log('killed');
+  });
+}
 
 loadTest(testOptions, (err, result) => {
   let timeElapsed = result.totalTimeSeconds;
@@ -16,7 +27,9 @@ loadTest(testOptions, (err, result) => {
     if(err) {
       console.log(`error: ${err} occured`);
     }
-    process.exit(1);
+    killApi();
+    setTimeout(process.exit(1), 1000);
   }
-  process.exit();
+  killApi();
+  setTimeout(process.exit(), 1000);
 });

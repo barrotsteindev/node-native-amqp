@@ -4,7 +4,8 @@
   "description": "test api",
   "main": "index.js",
   "dependencies": {
-    "loadtest": "*"
+    "loadtest": "*",
+    "request": "^2.81.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
