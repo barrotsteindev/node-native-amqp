@@ -25,7 +25,7 @@ class Consumer : public Nan::ObjectWrap {
 
  private:
   static inline v8::Local<v8::String> & hostnameKey() {
-  static v8::Local<v8::String> v8Hostname = Nan::New("hostname")
+  static v8::Local<v8::String> v8Hostname = Nan::New("hostName")
                                                      .ToLocalChecked();
     return v8Hostname;
   }

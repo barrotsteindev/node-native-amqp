@@ -1,0 +1,15 @@
+{
+  "name": "http-tester",
+  "version": "1.0.0",
+  "description": "test api",
+  "main": "index.js",
+  "dependencies": {
+    "loadtest": "*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js $AMQP_HOST"
+  },
+  "author": "",
+  "license": "ISC"
+}

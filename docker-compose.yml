@@ -1,0 +1,15 @@
+version: '2'
+services:
+  native-amqp:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - AMQP_HOST=rabbitmq
+    depends_on:
+      - "rabbitmq"
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "8080:15672"
