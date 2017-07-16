@@ -2,6 +2,9 @@ language: node_js
 node_js: 8
 sudo: required
 
+env:
+  - API_HOST=http-amqp AMQP_HOST=rabbitmq
+
 services:
   - docker
 
@@ -16,4 +19,4 @@ before_install:
 
 script:
   - sudo docker ps -a
-  - sleep 10s && AMQP_HOST=rabbitmq npm start
+  - sleep 30s && npm start
