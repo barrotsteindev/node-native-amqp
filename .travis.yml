@@ -19,4 +19,4 @@ before_install:
 
 script:
   - sudo docker ps -a
-  - sleep 30s && npm start
+  - sleep 30s && node index.js
