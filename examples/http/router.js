@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const addon = require('../../build/Release/addon.node');
-const consumer = new addon.Consumer({ 'hostName': '10.0.0.9',
-                                      'queue': 'jobs',
-                                      'routingKey': 'jobs',
-                                      'timeOut': 250 });
+const nativeAmqp = require('../../lib/index.js');
+const consumer = new nativeAmqp.Consumer({ 'hostName': 'localhost',
+                                           'queue': 'jobs',
+                                           'routingKey': 'jobs',
+                                           'timeOut': 250 });
 router.consumer = consumer;
 
 router.all('/', (req, res, next) => {

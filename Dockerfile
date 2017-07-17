@@ -9,8 +9,7 @@ Run ./install_amqplib.sh
 
 WORKDIR /opt/node-native-amqp/http-wrapper
 ADD ./e2e/http-wrapper/package.json /opt/node-native-amqp/http-wrapper/
-ADD ./*.cpp /opt/node-native-amqp/http-wrapper/
-ADD ./*.h /opt/node-native-amqp/http-wrapper/
+ADD ./src/ /opt/node-native-amqp/http-wrapper/
 ADD ./binding.gyp /opt/node-native-amqp/http-wrapper/
 RUN npm install --unsafe-perm
 ADD benchmarks/produce.js /opt/node-native-amqp/http-wrapper

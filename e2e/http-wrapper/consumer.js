@@ -1,4 +1,4 @@
-const nativeAmqp = require('./build/Release/addon.node');
+const nativeAmqp = require('./build/Release/native-amqp.node');
 let consumers = {};
 let hostName = null
 
