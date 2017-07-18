@@ -19,7 +19,7 @@ before_install:
   - docker build ./e2e/producer -t rabbit-producer:latest
   - docker run --network=amqp-net --env AMQP_HOST=rabbitmq rabbit-producer:latest
   - sudo apt-get -qq update
-  - sudo apt-get install -y gcc-c++ git
+  - sudo apt-get install -y g++ git
   - sh ./e2e/install_amqplib.sh
   - npm install
   - cd e2e/http-tester && npm install
