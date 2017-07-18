@@ -20,7 +20,7 @@ before_install:
   - docker run --network=amqp-net --env AMQP_HOST=rabbitmq rabbit-producer:latest
   - npm install
   - cd e2e/http-tester && npm install
-  - cd ./
+  - cd ../../
 
 script:
   - sudo docker ps -a
