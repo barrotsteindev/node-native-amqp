@@ -1,3 +1,5 @@
+'use strict';
+
 const loadTest = require('loadtest').loadTest;
 const request = require('request');
 const maxRequests = process.argv[3] || 1000;

@@ -1,3 +1,5 @@
+'use strict';
+
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
 const express = require('express');
