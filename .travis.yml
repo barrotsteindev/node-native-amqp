@@ -23,10 +23,10 @@ before_install:
   - sudo sh ./e2e/install_rabbitmq-c.sh
   - sudo sh ./e2e/install_amqplib.sh
   - npm install
-  - cd e2e/http-tester && npm install
-  - cd ../../
+  - cd e2e/http-wrapper && npm install && cd ../../
+  - cd e2e/http-tester && npm install && cd ../../
 
 script:
   - sudo docker ps -a
-  - node index.js
-  - sleep 5s && cd e2e/http-tester && node index.js
+  - cd e2e/http-wrapper && node index.js &
+  - cd - && sleep 5s && cd e2e/http-tester && node index.js
