@@ -18,7 +18,6 @@ before_install:
   - docker run -d --hostname rabbitmq --name rabbitmq -p 8080:15672 -p 5672:5672 --network=amqp-net rabbitmq:3-management
   - docker build ./e2e/producer -t rabbit-producer:latest
   - docker run --network=amqp-net --env AMQP_HOST=rabbitmq rabbit-producer:latest
-  - sudo add-apt-repository -y ppa:boost-latest/ppa
   - sudo apt-get update
   - sudo apt-get install -y libboost-system1.48-dev libboost-chrono1.48-dev cmake git make g++
   - sudo sh ./e2e/install_rabbitmq-c.sh
