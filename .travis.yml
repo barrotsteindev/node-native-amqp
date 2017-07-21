@@ -8,8 +8,7 @@ node_js:
 sudo: required
 
 env:
-  - API_HOST=http-amqp AMQP_HOST=rabbitmq
-  - LD_LIBRARY_PATH=/usr/lib:/usr/local/lib
+  - API_HOST=http-amqp AMQP_HOST=rabbitmq LD_LIBRARY_PATH=/usr/lib:/usr/local/lib
 
 services:
   - docker
