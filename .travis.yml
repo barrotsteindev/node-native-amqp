@@ -19,7 +19,7 @@ before_install:
   - docker build ./e2e/producer -t rabbit-producer:latest
   - docker run --network=amqp-net --env AMQP_HOST=rabbitmq rabbit-producer:latest
   - sudo apt-get update
-  - sudo apt-get install -y libboost-system1.48-dev libboost-chrono1.48-dev cmake git make g++
+  - sudo apt-get install -y libboost-system-dev libboost-chrono-dev cmake git make g++
   - sudo sh ./e2e/install_rabbitmq-c.sh
   - sudo sh ./e2e/install_amqplib.sh
   - npm install
