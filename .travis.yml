@@ -23,6 +23,9 @@ before_install:
   - sudo sh ./e2e/install_rabbitmq-c.sh
   - sudo sh ./e2e/install_amqplib.sh
   - npm install
+  - cp -r lib e2e/http-wrapper/
+  - cp -r src e2e/http-wrapper/
+  - cp binding.gyp e2e/http-wrapper/
   - cd e2e/http-wrapper && npm install && cd ../../
   - cd e2e/http-tester && npm install && cd ../../
 
