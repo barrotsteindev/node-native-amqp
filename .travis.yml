@@ -30,8 +30,5 @@ before_install:
   - cd e2e/http-tester && npm install && cd ../../
 
 script:
-  - sudo docker ps -a
   - cd e2e/http-wrapper && node index.js &
-  - pwd
-  - ls -ll e2e
   - sleep 5s && cd e2e/http-tester && node index.js
