@@ -32,3 +32,4 @@ before_install:
 script:
   - cd e2e/http-wrapper && node index.js &
   - sleep 5s && cd e2e/http-tester && node index.js
+  - curl -XDELETE http://localhost:3000/ && sleep 5s
