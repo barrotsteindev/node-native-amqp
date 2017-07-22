@@ -33,5 +33,5 @@ script:
   - sudo docker ps -a
   - cd e2e/http-wrapper && node index.js &
   - pwd
-  - ll
+  - ls -ll
   - cd ../../ && sleep 5s && cd e2e/http-tester && node index.js
