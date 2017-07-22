@@ -36,7 +36,6 @@ class AMQPConsumer {
   std::string m_consumer_string;
   AmqpClient::Channel::ptr_t m_channel;
   std::mutex m_consume_lock;
-  bool m_open = false;
 };
 
 #endif  // AMQPCONSUMER_H_

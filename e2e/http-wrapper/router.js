@@ -1,11 +1,7 @@
+'use strict';
+
 const express = require('express');
 const router = express.Router();
-const nativeAmqp = require('../../lib/index.js');
-const consumer = new nativeAmqp.Consumer({ 'hostName': 'localhost',
-                                           'queue': 'jobs',
-                                           'routingKey': 'jobs',
-                                           'timeOut': 250 });
-router.consumer = consumer;
 
 router.all('/', (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -19,9 +15,9 @@ router.delete('/', (req, res) => {
 });
 
 router.get('/', (request, response) => {
-  consumer.getMessage((err, msg) => {
+  router.consumer.getMessage((err, msg) => {
     if (err) {
-      response.send(`error: ${err}\n`);
+      response.status(500).send(`error: ${err}\n`);
     } else {
       msg.ack();
       response.send(`${msg.value()}\n`);

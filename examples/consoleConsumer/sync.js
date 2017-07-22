@@ -1,4 +1,4 @@
-const addon = require('./build/Release/addon.node');
+const addon = require('./build/Release/native-amqp.node');
 
 let consumer = new addon.Consumer({ 'queue': 'jobs',
                                     'routingKey': 'jobs',

@@ -11,7 +11,6 @@ AMQPConsumer::AMQPConsumer(std::string broker_address, std::string queue_name,
     routing_key = routing_key;
     queue_name = queue_name;
     m_timeout = timeout;
-    m_open = true;
 }
 
 
@@ -33,8 +32,5 @@ Message * AMQPConsumer::Poll() {
 }
 
 void AMQPConsumer::Close() {
-    if (m_open) {
-      m_channel->BasicCancel(m_consumer_string);
-      m_open = false;
-    }
+    m_channel->BasicCancel(m_consumer_string);
 }
