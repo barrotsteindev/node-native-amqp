@@ -1,16 +1,18 @@
 #include "AsyncConsumer.h"
 #include <iostream>
 
-ConsumerWorker::ConsumerWorker(Nan::Callback * callback,
-                               AMQPConsumer & consumer)
+template<class ChannelType>
+ConsumerWorker<ChannelType>::ConsumerWorker(Nan::Callback * callback,
+                               AMQPConsumer<ChannelType> & consumer)
                                : _consumer(consumer),
                                Nan::AsyncWorker(callback) {}
 // Executes in worker thread
-void ConsumerWorker::Execute() {
+template<class ChannelType>
+void ConsumerWorker<ChannelType>::Execute() {
   _message = _consumer.Poll();
 }
 // Executes in event loop
-void ConsumerWorker::HandleOKCallback() {
+void ConsumerWorker<ChannelType>::HandleOKCallback() {
   if (_message == NULL) {
     v8::Local<v8::Value> argv[] = { Nan::New("Consumer time out")
                                     .ToLocalChecked(), Nan::Null() };

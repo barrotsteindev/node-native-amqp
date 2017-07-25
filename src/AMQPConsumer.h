@@ -7,7 +7,7 @@
 #include "Message.h"
 
 
-class AMQPConsumer {
+template <class ChannelType> class AMQPConsumer {
   std::string broker_address;
   std::string queue_name;
   std::string routing_key;
@@ -34,7 +34,7 @@ class AMQPConsumer {
 
  private:
   std::string m_consumer_string;
-  AmqpClient::Channel::ptr_t m_channel;
+  ChannelType m_channel;
   std::mutex m_consume_lock;
 };
 
