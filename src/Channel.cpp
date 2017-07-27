@@ -1,6 +1,13 @@
 #include "Channel.h"
 
-Channel::Channel(std::string broker_host, int broker_port) {
-  m_channel = AmqpClient::Channel::Create(broker_host, broker_port);
-  m_description = broker_host + ":" + std::to_string(broker_port);
+std::string Channel::Describe() {
+  return m_description;
+}
+
+AmqpClient::Channel::ptr_t Channel::GetChannel() {
+  return m_channel;
+}
+
+Channel::~Channel() {
+  // dtor
 }

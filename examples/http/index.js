@@ -27,7 +27,7 @@ if (cluster.isMaster) {
   process.on('disconnect', () => {
     console.log('closing');
     router.consumer.close();
-    console.log('closed');
+    console.log('closed')
   });
   const app = express();
   const port = 3000;

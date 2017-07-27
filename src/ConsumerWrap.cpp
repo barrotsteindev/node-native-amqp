@@ -4,7 +4,6 @@
 #include "AMQPConsumer.h"
 #include "AsyncConsumer.h"
 
-template<class ChannelType>
 class ConsumerWrap : public Nan::ObjectWrap {
  public:
   static NAN_MODULE_INIT(Init) {
@@ -89,9 +88,9 @@ class ConsumerWrap : public Nan::ObjectWrap {
       m_hostname = std::string(* utfHostname);
       Nan::Utf8String utfQueue(v8Queue);
       Nan::Utf8String utfRoutingKey(v8RoutingKey);
-      AMQPConsumer<ChannelType> * consumer;
+      AMQPConsumer * consumer;
       try {
-          consumer = new AMQPConsumer<ChannelType>(m_hostname, std::string(* utfQueue),
+          consumer = new AMQPConsumer(m_hostname, std::string(* utfQueue),
                                       std::string(* utfRoutingKey),
                                       false, prefetchCount, timeOut);
       } catch (...) {
@@ -174,7 +173,7 @@ class ConsumerWrap : public Nan::ObjectWrap {
   }
 
   std::string m_hostname;
-  AMQPConsumer<ChannelType> * m_consumer;
+  AMQPConsumer * m_consumer;
 };
 
 NODE_MODULE(objectwrapper, ConsumerWrap::Init)

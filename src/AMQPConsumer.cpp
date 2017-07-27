@@ -1,11 +1,12 @@
 #include "AMQPConsumer.h"
+#include "ChannelImpl.h"
 
-template <class ChannelType>
-AMQPConsumer<ChannelType>::AMQPConsumer(std::string broker_address, std::string queue_name,
+AMQPConsumer::AMQPConsumer(std::string broker_address, std::string queue_name,
   std::string routing_key, bool m_acks, int prefetchCount, int timeout) {
-    m_channel = AmqpClient::Channel::Create(broker_address);
+    // m_channel = AmqpClient::Channel::Create(broker_address);
+    m_connection = new ChannelImpl(broker_address, 5672);
     m_acks = m_acks;
-    m_consumer_string = m_channel->BasicConsume(queue_name, routing_key,
+    m_consumer_string = m_connection->GetChannel()->BasicConsume(queue_name, routing_key,
                                                 true, m_acks, false,
                                                 prefetchCount);
     broker_address = broker_address;
@@ -15,26 +16,24 @@ AMQPConsumer<ChannelType>::AMQPConsumer(std::string broker_address, std::string 
 }
 
 
-template <class ChannelType>
-AMQPConsumer<ChannelType>::~AMQPConsumer() {
+AMQPConsumer::~AMQPConsumer() {
     // dtor
-    delete m_channel;
+    delete m_connection;
 }
 
-template <class ChannelType>
-Message * AMQPConsumer<ChannelType>::Poll() {
+Message * AMQPConsumer::Poll() {
     AmqpClient::Envelope::ptr_t msg;
     AMQPConsumer::m_consume_lock.lock();
-    m_channel->BasicConsumeMessage(m_consumer_string, msg, m_timeout);
+    m_connection->GetChannel()->BasicConsumeMessage(m_consumer_string, msg, m_timeout);
     AMQPConsumer::m_consume_lock.unlock();
     if (msg == NULL) {
       return NULL;
     }
-    Message * msg_obj = new Message(m_channel, msg);
+    Message * msg_obj = new Message(m_connection->GetChannel(), msg);
     return msg_obj;
 }
 
-template <class ChannelType>
-void AMQPConsumer<ChannelType>::Close() {
-    m_channel->BasicCancel(m_consumer_string);
+void AMQPConsumer::Close() {
+    m_connection->GetChannel()->BasicCancel(m_consumer_string);
+    delete m_connection;
 }

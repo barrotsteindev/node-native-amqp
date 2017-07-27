@@ -5,9 +5,10 @@
 #include <string>
 #include <mutex>
 #include "Message.h"
+#include "Channel.h"
 
 
-template <class ChannelType> class AMQPConsumer {
+class AMQPConsumer {
   std::string broker_address;
   std::string queue_name;
   std::string routing_key;
@@ -34,7 +35,7 @@ template <class ChannelType> class AMQPConsumer {
 
  private:
   std::string m_consumer_string;
-  ChannelType m_channel;
+  Channel * m_connection;
   std::mutex m_consume_lock;
 };
 
