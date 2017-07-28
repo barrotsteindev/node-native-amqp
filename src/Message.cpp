@@ -33,7 +33,6 @@ v8::Local<v8::Object> Message::V8Instance() {
   v8::Local<v8::Value> argv[argc] = { Nan::New<v8::External>(this) };
   v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
   v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
-
   return scope.Escape(instance);
 }
 
@@ -47,7 +46,7 @@ void Message::New(const Nan::FunctionCallbackInfo<v8::Value> & info) {
 }
 
 void Message::New(const Nan::FunctionCallbackInfo<v8::Value> & info,
-                  AmqpClient::Channel::ptr_t channel,
+                  Channel * channel,
                   const AmqpClient::Envelope::ptr_t & msg_envelope) {
   Message* obj = new Message(channel, msg_envelope);
   obj->Wrap(info.This());
@@ -78,7 +77,7 @@ void Message::JsAck(const Nan::FunctionCallbackInfo<v8::Value> & info) {
   info.GetReturnValue().Set(Nan::New(true));
 }
 
-Message::Message(const AmqpClient::Channel::ptr_t & channel,
+Message::Message(Channel * channel,
                  const AmqpClient::Envelope::ptr_t & msg_envelope) {
   m_channel = channel;
   m_envelope = msg_envelope;
@@ -87,11 +86,11 @@ Message::Message(const AmqpClient::Channel::ptr_t & channel,
 Message::Message() { }
 
 void Message::Ack(void) {
-  m_channel->BasicAck(m_envelope);
+  m_channel->GetChannel()->BasicAck(m_envelope);
 }
 
 void Message::Reject(bool requeue) {
-  m_channel->BasicReject(m_envelope, requeue);
+  m_channel->GetChannel()->BasicReject(m_envelope, requeue);
 }
 
 bool Message::Valid(void) {

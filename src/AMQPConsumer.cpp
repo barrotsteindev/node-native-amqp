@@ -3,12 +3,13 @@
 
 AMQPConsumer::AMQPConsumer(std::string broker_address, std::string queue_name,
   std::string routing_key, bool m_acks, int prefetchCount, int timeout) {
-    // m_channel = AmqpClient::Channel::Create(broker_address);
-    m_connection = new ChannelImpl(broker_address, 5672);
+    m_connection = ChannelImpl::Create(broker_address, 5672);
     m_acks = m_acks;
-    m_consumer_string = m_connection->GetChannel()->BasicConsume(queue_name, routing_key,
-                                                true, m_acks, false,
-                                                prefetchCount);
+    m_consumer_string = m_connection->GetChannel()->BasicConsume(queue_name,
+                                                                 routing_key,
+                                                                 true, m_acks,
+                                                                 false,
+                                                                 prefetchCount);
     broker_address = broker_address;
     routing_key = routing_key;
     queue_name = queue_name;
@@ -29,7 +30,7 @@ Message * AMQPConsumer::Poll() {
     if (msg == NULL) {
       return NULL;
     }
-    Message * msg_obj = new Message(m_connection->GetChannel(), msg);
+    Message * msg_obj = new Message(m_connection, msg);
     return msg_obj;
 }
 

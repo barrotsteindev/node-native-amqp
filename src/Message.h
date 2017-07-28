@@ -5,13 +5,14 @@
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
 #include <amqp.h>
 #include <string>
+#include "Channel.h"
 
 
 class Message : public Nan::ObjectWrap {
  public:
         static Nan::Persistent<v8::Function> constructor;
         static void Init();
-        explicit Message(const AmqpClient::Channel::ptr_t & channel,
+        explicit Message(Channel * channel,
                          const AmqpClient::Envelope::ptr_t & msg_envelope);
         Message();
         static void JsValue(const Nan::FunctionCallbackInfo<v8::Value> & info);
@@ -27,11 +28,11 @@ class Message : public Nan::ObjectWrap {
  protected:
 // protected
  private:
-        AmqpClient::Channel::ptr_t m_channel;
+        Channel * m_channel;
         AmqpClient::Envelope::ptr_t m_envelope;
         static void New(const Nan::FunctionCallbackInfo<v8::Value> & info);
         static void New(const Nan::FunctionCallbackInfo<v8::Value> & info,
-                        AmqpClient::Channel::ptr_t channel,
+                        Channel * channel,
                         const AmqpClient::Envelope::ptr_t & msg_envelope);
         static v8::Local<v8::Object> NewInstance(v8::Local<v8::Value> arg);
 };
