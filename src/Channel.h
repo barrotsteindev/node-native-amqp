@@ -1,5 +1,5 @@
-#ifndef SRC_CHANNELBASE_H_
-#define SRC_CHANNELBASE_H_
+#ifndef SRC_CHANNEL_H_
+#define SRC_CHANNEL_H_
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
 #include <string>
 
@@ -15,4 +15,4 @@ class Channel {
   AmqpClient::Channel::ptr_t m_channel = NULL;
 };
 
-#endif  // SRC_CHANNELBASE_H_
+#endif  // SRC_CHANNEL_H_
