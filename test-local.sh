@@ -1,3 +1,4 @@
+#!/usr/bin/sh
 sudo docker-compose up --force-recreate -d
 echo waiting for services to startup...
 sleep 45s
