@@ -1,9 +1,10 @@
 #include "AMQPConsumer.h"
 #include "ChannelImpl.h"
 
-AMQPConsumer::AMQPConsumer(std::string broker_address, std::string queue_name,
+
+AMQPConsumer::AMQPConsumer(Channel * connection, std::string queue_name,
   std::string routing_key, bool m_acks, int prefetchCount, int timeout) {
-    m_connection = ChannelImpl::Create(broker_address, 5672);
+    m_connection = connection;
     m_acks = m_acks;
     m_consumer_string = m_connection->GetChannel()->BasicConsume(queue_name,
                                                                  routing_key,
@@ -25,7 +26,8 @@ AMQPConsumer::~AMQPConsumer() {
 Message * AMQPConsumer::Poll() {
     AmqpClient::Envelope::ptr_t msg;
     AMQPConsumer::m_consume_lock.lock();
-    m_connection->GetChannel()->BasicConsumeMessage(m_consumer_string, msg, m_timeout);
+    m_connection->GetChannel()->BasicConsumeMessage(m_consumer_string,
+                                                    msg, m_timeout);
     AMQPConsumer::m_consume_lock.unlock();
     if (msg == NULL) {
       return NULL;
