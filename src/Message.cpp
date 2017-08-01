@@ -78,10 +78,8 @@ void Message::JsAck(const Nan::FunctionCallbackInfo<v8::Value> & info) {
 }
 
 Message::Message(Channel * channel,
-                 const AmqpClient::Envelope::ptr_t & msg_envelope) {
-  m_channel = channel;
-  m_envelope = msg_envelope;
-}
+                 const AmqpClient::Envelope::ptr_t & msg_envelope):
+                 m_channel(channel), m_envelope(msg_envelope) { }
 
 Message::Message() { }
 

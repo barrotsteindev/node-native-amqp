@@ -9,15 +9,15 @@
 
 
 class AMQPConsumer {
-  std::string broker_address;
-  std::string queue_name;
-  std::string routing_key;
+  std::string m_broker_address;
+  std::string m_queue_name;
+  std::string m_routing_key;
   bool m_acks;
   int m_timeout;
 
  public:
   explicit AMQPConsumer(Channel * connection, std::string queue_name,
-                        std::string routing_key, bool m_acks,
+                        std::string routing_key, bool acks,
                         int prefetchCount, int timeout);
   virtual ~AMQPConsumer();
   Message * Poll();
