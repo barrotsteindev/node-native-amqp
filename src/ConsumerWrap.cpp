@@ -133,12 +133,11 @@ class ConsumerWrap : public Nan::ObjectWrap {
           m_hostname = channel->Describe();
           AMQPConsumer * consumer;
           try {
-              consumer = new AMQPConsumer(channel, queue, routingKey, false,
-                                          prefetchCount, timeOut);
+              consumer = new AMQPConsumer(channel, queue, routingKey,
+                                          false, prefetchCount, timeOut);
           } catch (...) {
-              std::string exceptionString = "could not connect to host: "
-                                            + m_hostname;
-              Nan::ThrowError(exceptionString.c_str());
+              Nan::ThrowError(std::string(
+                "could not create consumer for queue: " + queue).c_str());
           }
           m_isOpen = true;
           m_consumer = consumer;
@@ -157,12 +156,18 @@ class ConsumerWrap : public Nan::ObjectWrap {
       if (conf->Has(uriKey())) {
         v8::Local<v8::String> amqpUri = conf->Get(hostnameKey())->ToString();
         Nan::Utf8String utfamqpUri(amqpUri);
-        Channel * conn = ChannelImpl::CreateFromUri(std::string(* utfamqpUri));
+        std::string uri = std::string(* utfamqpUri);
+        Channel * conn;
+        try {
+          conn = ChannelImpl::CreateFromUri(uri);
+        } catch (...) {
+          Nan::ThrowTypeError(std::string(
+            "Could not connect to: " + uri).c_str());
+        }
         obj = ConsumerWrap::CreateFromUri(conf, conn);
       } else {
         obj = ConsumerWrap::Create(conf);
       }
-      // ConsumerWrap * obj = new ConsumerWrap(conf);
       obj->Wrap(info.This());
       info.GetReturnValue().Set(info.This());
     } else {

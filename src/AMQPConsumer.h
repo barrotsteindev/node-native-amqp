@@ -16,8 +16,8 @@ class AMQPConsumer {
   int m_timeout;
 
  public:
-  explicit AMQPConsumer(Channel * connection, std::string queue_name,
-                        std::string routing_key, bool acks,
+  explicit AMQPConsumer(Channel * connection, std::string const & queue_name,
+                        std::string const & routing_key, bool acks,
                         int prefetchCount, int timeout);
   virtual ~AMQPConsumer();
   Message * Poll();
