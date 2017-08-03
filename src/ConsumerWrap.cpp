@@ -7,8 +7,7 @@
 
 class ConsumerWrap : public Nan::ObjectWrap {
  public:
-  static NAN_MODULE_INIT(Init) {
-    Message::Init();
+  static void Init() {
     v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
     tpl->SetClassName(Nan::New("Consumer").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
@@ -20,23 +19,40 @@ class ConsumerWrap : public Nan::ObjectWrap {
     Nan::SetPrototypeMethod(tpl, "close", Close);
 
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
-    Nan::Set(target, Nan::New("Consumer").ToLocalChecked(),
-      Nan::GetFunction(tpl).ToLocalChecked());
+  }
+
+  static ConsumerWrap * Create(Channel * channel,
+                               const v8::Local<v8::Object> & conf) {
+    if (!conf->Has(routingKey())) {
+      Nan::ThrowTypeError("Key: routingKey must be supllied");
+    }
+    int timeOut = conf->Has(timeOutKey()) ?
+                  conf->Get(timeOutKey())->NumberValue() :
+                  200;
+    int prefetchCount = conf->Has(prefetchKey()) ?
+                        conf->Get(prefetchKey())->NumberValue() :
+                        10;
+    v8::Local<v8::String> v8Queue = conf->Get(queueKey())->ToString();
+    Nan::Utf8String utfQueue(v8Queue);
+    v8::Local<v8::String> v8RoutingKey = conf->Get(routingKey())->ToString();
+    Nan::Utf8String utfRoutingKey(v8RoutingKey);
+    return new ConsumerWrap(channel, std::string(* utfQueue),
+                            std::string(* utfRoutingKey), false,
+                            prefetchCount, timeOut);
+  }
+
+  v8::Local<v8::Object> V8Instance() {
+    Nan::EscapableHandleScope scope;
+
+    const unsigned argc = 1;
+    v8::Local<v8::Value> argv[argc] = { Nan::New<v8::External>(this) };
+    v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor());
+    v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
+    return scope.Escape(instance);
   }
 
  private:
   bool m_isOpen = false;
-  static inline v8::Local<v8::String> & hostnameKey() {
-  static v8::Local<v8::String> v8Hostname = Nan::New("hostName")
-                                                     .ToLocalChecked();
-    return v8Hostname;
-  }
-
-    static const inline v8::Local<v8::String> & localhost() {
-      static v8::Local<v8::String> v8Localhost = Nan::New("localhost")
-                                                          .ToLocalChecked();
-      return v8Localhost;
-    }
 
     static inline v8::Local<v8::String> & queueKey() {
       static v8::Local<v8::String> v8Queue = Nan::New("queue").ToLocalChecked();
@@ -66,68 +82,7 @@ class ConsumerWrap : public Nan::ObjectWrap {
       return v8PrefetchKey;
     }
 
-    static const inline v8::Local<v8::String> & portKey() {
-      static v8::Local<v8::String> v8PortKey = Nan::New("port")
-                                                            .ToLocalChecked();
-      return v8PortKey;
-    }
-
-    static const inline v8::Local<v8::String> & uriKey() {
-      static v8::Local<v8::String> v8UriKey = Nan::New("uri")
-                                                            .ToLocalChecked();
-      return v8UriKey;
-    }
-
-
-    static ConsumerWrap * Create(const v8::Local<v8::Object> & conf) {
-      if (!conf->Has(routingKey())) {
-        Nan::ThrowTypeError("Key: routingKey must be supllied");
-      }
-      v8::Local<v8::String> hostname = conf->Has(hostnameKey()) ?
-                                       conf->Get(hostnameKey())->ToString() :
-                                       localhost();
-      int timeOut = conf->Has(timeOutKey()) ?
-                    conf->Get(timeOutKey())->NumberValue() :
-                    200;
-      int prefetchCount = conf->Has(prefetchKey()) ?
-                          conf->Get(prefetchKey())->NumberValue() :
-                          10;
-      int port = conf->Has(portKey()) ?
-                 conf->Get(portKey())->NumberValue() :
-                 5672;
-      v8::Local<v8::String> v8Queue = conf->Get(queueKey())->ToString();
-      Nan::Utf8String utfQueue(v8Queue);
-      v8::Local<v8::String> v8RoutingKey = conf->Get(routingKey())->ToString();
-      Nan::Utf8String utfRoutingKey(v8RoutingKey);
-      Nan::Utf8String utfHostname(hostname);
-      std::string stdHostname = std::string(* utfHostname);
-      Channel * conn = ChannelImpl::Create(stdHostname, port);
-      return new ConsumerWrap(conn, std::string(* utfQueue),
-                              std::string(* utfRoutingKey), false,
-                              prefetchCount, timeOut);
-    }
-
-    static ConsumerWrap * CreateFromUri(const v8::Local<v8::Object> & conf,
-    Channel * channel) {
-      v8::Local<v8::String> amqpUri = conf->Get(hostnameKey())->ToString();
-      int timeOut = conf->Has(timeOutKey()) ?
-                    conf->Get(timeOutKey())->NumberValue() :
-                    200;
-      int prefetchCount = conf->Has(prefetchKey()) ?
-                          conf->Get(prefetchKey())->NumberValue() :
-                          10;
-      v8::Local<v8::String> v8RoutingKey = conf->Get(routingKey())->ToString();
-      Nan::Utf8String utfRoutingKey(v8RoutingKey);
-      Nan::Utf8String utfamqpUri(amqpUri);
-      v8::Local<v8::String> v8Queue = conf->Get(queueKey())->ToString();
-      Nan::Utf8String utfQueue(v8Queue);
-      std::string stdUri = std::string(* utfamqpUri);
-      return new ConsumerWrap(channel, std::string(* utfQueue),
-                              std::string(* utfRoutingKey), false,
-                              prefetchCount, timeOut);
-    }
-
-      explicit ConsumerWrap(Channel * channel, const std::string & queue,
+    explicit ConsumerWrap(Channel * channel, const std::string & queue,
         const std::string & routingKey, bool autoAck,
         int prefetchCount, int timeOut) {
           m_hostname = channel->Describe();
@@ -144,39 +99,18 @@ class ConsumerWrap : public Nan::ObjectWrap {
         }
 
   ~ConsumerWrap() {
-    delete m_consumer;
+    if (m_isOpen) {
+      delete m_consumer;
+    }
   }
 
+
   static NAN_METHOD(New) {
-    if (!info[0]->IsObject()) {
-      Nan::ThrowTypeError("Consumer configuration must be a json object");
-    } else if (info.IsConstructCall()) {
-      v8::Local<v8::Object> conf = info[0]->ToObject();
-      ConsumerWrap * obj;
-      if (conf->Has(uriKey())) {
-        v8::Local<v8::String> amqpUri = conf->Get(hostnameKey())->ToString();
-        Nan::Utf8String utfamqpUri(amqpUri);
-        std::string uri = std::string(* utfamqpUri);
-        Channel * conn;
-        try {
-          conn = ChannelImpl::CreateFromUri(uri);
-        } catch (...) {
-          Nan::ThrowTypeError(std::string(
-            "Could not connect to: " + uri).c_str());
-        }
-        obj = ConsumerWrap::CreateFromUri(conf, conn);
-      } else {
-        obj = ConsumerWrap::Create(conf);
-      }
-      obj->Wrap(info.This());
-      info.GetReturnValue().Set(info.This());
-    } else {
-      // support non constructor call
-      const int argc = 1;
-      v8::Local<v8::Value> argv[argc] = {info[0]->ToObject()};
-      v8::Local<v8::Function> cons = Nan::New(constructor());
-      info.GetReturnValue().Set(cons->NewInstance(argc, argv));
-    }
+    v8::Handle<v8::External> externalConsumer = v8::Handle<v8::External>::Cast
+                                                 (info[0]);
+    ConsumerWrap* obj = static_cast<ConsumerWrap*>(externalConsumer->Value());
+    obj->Wrap(info.This());
+    info.GetReturnValue().Set(info.This());
   }
 
   static NAN_METHOD(Close) {
@@ -196,7 +130,7 @@ class ConsumerWrap : public Nan::ObjectWrap {
       Nan::ThrowError("Consumer was already closed");
     }
     Message * msg = obj->m_consumer->Poll();
-    if (!(msg->Valid())) {
+    if (msg == NULL) {
       Nan::ThrowReferenceError("Consumer time out");
       return info.GetReturnValue().Set(Nan::New<v8::String>
                                        ("consumer timed out").ToLocalChecked());
@@ -232,5 +166,3 @@ class ConsumerWrap : public Nan::ObjectWrap {
   std::string m_hostname;
   AMQPConsumer * m_consumer;
 };
-
-NODE_MODULE(objectwrapper, ConsumerWrap::Init)

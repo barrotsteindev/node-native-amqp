@@ -31,9 +31,6 @@ class Message : public Nan::ObjectWrap {
         Channel * m_channel;
         AmqpClient::Envelope::ptr_t m_envelope;
         static void New(const Nan::FunctionCallbackInfo<v8::Value> & info);
-        static void New(const Nan::FunctionCallbackInfo<v8::Value> & info,
-                        Channel * channel,
-                        const AmqpClient::Envelope::ptr_t & msg_envelope);
         static v8::Local<v8::Object> NewInstance(v8::Local<v8::Value> arg);
 };
 

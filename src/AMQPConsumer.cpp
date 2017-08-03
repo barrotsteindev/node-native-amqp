@@ -35,5 +35,4 @@ Message * AMQPConsumer::Poll() {
 
 void AMQPConsumer::Close() {
     m_connection->GetChannel()->BasicCancel(m_consumer_string);
-    delete m_connection;
 }

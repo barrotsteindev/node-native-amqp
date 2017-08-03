@@ -14,18 +14,6 @@ void Message::Init() {
   constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
 }
 
-
-v8::Local<v8::Object> Message::NewInstance(v8::Local<v8::Value> arg) {
-  Nan::EscapableHandleScope scope;
-
-  const unsigned argc = 1;
-  v8::Local<v8::Value> argv[argc] = { arg };
-  v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
-  v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
-
-  return scope.Escape(instance);
-}
-
 v8::Local<v8::Object> Message::V8Instance() {
   Nan::EscapableHandleScope scope;
 
@@ -40,15 +28,6 @@ void Message::New(const Nan::FunctionCallbackInfo<v8::Value> & info) {
   v8::Handle<v8::External> external_msg = v8::Handle<v8::External>::Cast
                                           (info[0]);
   Message* obj = static_cast<Message*>(external_msg->Value());
-  obj->Wrap(info.This());
-
-  info.GetReturnValue().Set(info.This());
-}
-
-void Message::New(const Nan::FunctionCallbackInfo<v8::Value> & info,
-                  Channel * channel,
-                  const AmqpClient::Envelope::ptr_t & msg_envelope) {
-  Message* obj = new Message(channel, msg_envelope);
   obj->Wrap(info.This());
 
   info.GetReturnValue().Set(info.This());
