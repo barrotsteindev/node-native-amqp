@@ -51,6 +51,11 @@ class ConsumerWrap : public Nan::ObjectWrap {
     return scope.Escape(instance);
   }
 
+  static inline Nan::Persistent<v8::Function> & constructor() {
+    static Nan::Persistent<v8::Function> my_constructor;
+    return my_constructor;
+  }
+
  private:
   bool m_isOpen = false;
 
@@ -156,11 +161,6 @@ class ConsumerWrap : public Nan::ObjectWrap {
   static NAN_METHOD(GetHostname) {
     ConsumerWrap * obj = Nan::ObjectWrap::Unwrap<ConsumerWrap>(info.Holder());
     info.GetReturnValue().Set(Nan::New(obj->m_hostname).ToLocalChecked());
-  }
-
-  static inline Nan::Persistent<v8::Function> & constructor() {
-    static Nan::Persistent<v8::Function> my_constructor;
-    return my_constructor;
   }
 
   std::string m_hostname;

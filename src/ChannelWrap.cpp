@@ -56,7 +56,7 @@ class ChannelWrap : public Nan::ObjectWrap {
 
   static NAN_METHOD(New) {
      if (!info[0]->IsObject()) {
-       Nan::ThrowTypeError("Consumer configuration must be a json object");
+       Nan::ThrowTypeError("Channel configuration must be a json object");
      } else if (info.IsConstructCall()) {
       ChannelWrap * channel = new ChannelWrap(info);
       channel->Wrap(info.This());

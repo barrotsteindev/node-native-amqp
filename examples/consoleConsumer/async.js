@@ -1,6 +1,7 @@
-const addon = require('../../build/Release/native-amqp.node');
+const amqp = require('../../lib/index.js');
+let channel = new amqp.Channel({});
+let consumer = channel.Consumer({ 'queue': 'jobs',
 
-let consumer = new addon.Consumer({ 'queue': 'jobs',
                                     'routingKey': 'jobs',
                                     'timeOut': 250 });
 
