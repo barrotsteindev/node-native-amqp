@@ -1,6 +1,6 @@
 #include <nan.h>
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
-#include "ConsumerWrap.cpp"
+#include "ConsumerWrap.h"
 #include "Message.h"
 #include "ChannelImpl.h"
 
@@ -27,8 +27,19 @@ class ChannelWrap : public Nan::ObjectWrap {
     m_conf(info[0]->ToObject()) { }
 
   static NAN_METHOD(CreateConsumer) {
+    if (info.IsConstructCall()) {
+      return Nan::ThrowTypeError("Does not support constructor calls");
+    }
     ChannelWrap * channel = Nan::ObjectWrap::Unwrap<ChannelWrap>(info.Holder());
     v8::Local<v8::Object> consumerConf = info[0]->ToObject();
+
+    if (!consumerConf->Has(ConsumerWrap::queueKey())) {
+      return Nan::ThrowTypeError("Key: queue must be supllied");
+    }
+    if (!consumerConf->Has(ConsumerWrap::routingKey())) {
+      return Nan::ThrowTypeError("Key: routingKey must be supllied");
+    }
+
     ConsumerWrap * consumer = ConsumerWrap::Create(channel->GetChannel(),
                                                    consumerConf);
     v8::Local<v8::Object> consumerObj = consumer->V8Instance();
