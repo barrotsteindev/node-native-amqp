@@ -1,11 +1,12 @@
 {
-  "name": "node-native-amqp",
+  "name": "native-amqp-http-example",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "node-gyp rebuild"
+    "install": "cd ../../ && node-gyp rebuild",
+    "start": "node index.js"
   },
   "author": "",
   "gypfile": true,
@@ -13,7 +14,6 @@
   "dependencies": {
     "bindings": "^1.2.1",
     "express": "^4.15.3",
-    "loadtest": "^2.3.0",
     "nan": "^2.6.2"
   }
 }

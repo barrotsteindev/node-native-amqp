@@ -15,10 +15,11 @@ connection.on('ready', function() {
   connection.queue('jobs', {durable: true, autoDelete: false}, function(q) {
     q.bind("#");
     let i = 0;
-    q.subscribe({ ack: true, prefetchCount: 10 }, function(message) {
+    q.subscribe({ ack: true, prefetchCount: 10 }, function(message, headers, deliveryInfo, messageObject) {
         i++;
         console.log(message.data.toString());
-        if (i === 999) {
+        messageObject.acknowledge(false);
+        if (i === 9999) {
           connection.disconnect();
           process.exit();
         }

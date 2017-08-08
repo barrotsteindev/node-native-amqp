@@ -1,0 +1,16 @@
+{
+  "name": "http-tester",
+  "version": "1.0.0",
+  "description": "test api",
+  "main": "index.js",
+  "dependencies": {
+    "loadtest": "^2.3.0",
+    "request": "^2.81.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js $API_HOST"
+  },
+  "author": "",
+  "license": "ISC"
+}
