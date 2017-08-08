@@ -58,7 +58,7 @@
       }
       m_is_open = true;
       m_consumer = consumer;
-}
+  }
 
   ConsumerWrap::~ConsumerWrap() {
     if (m_is_open) {
