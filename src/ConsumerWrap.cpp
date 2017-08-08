@@ -44,24 +44,24 @@
   }
 
 
-    ConsumerWrap::ConsumerWrap(Channel * channel,
-      const std::string & queue, const std::string & routingKey, bool autoAck,
-        int prefetchCount, int timeOut) {
-          m_hostname = channel->Describe();
-          AMQPConsumer * consumer;
-          try {
-              consumer = new AMQPConsumer(channel, queue, routingKey,
-                                          false, prefetchCount, timeOut);
-          } catch (...) {
-              Nan::ThrowError(std::string(
-                "could not create consumer for queue: " + queue).c_str());
-          }
-          m_isOpen = true;
-          m_consumer = consumer;
-        }
+  ConsumerWrap::ConsumerWrap(Channel * channel, const std::string & queue,
+    const std::string & routingKey, bool autoAck,
+    int prefetchCount, int timeOut) {
+      m_hostname = channel->Describe();
+      AMQPConsumer * consumer;
+      try {
+          consumer = new AMQPConsumer(channel, queue, routingKey,
+                                      false, prefetchCount, timeOut);
+      } catch (...) {
+          Nan::ThrowError(std::string(
+            "could not create consumer for queue: " + queue).c_str());
+      }
+      m_is_open = true;
+      m_consumer = consumer;
+}
 
   ConsumerWrap::~ConsumerWrap() {
-    if (m_isOpen) {
+    if (m_is_open) {
       delete m_consumer;
     }
   }
@@ -77,8 +77,8 @@
 
   NAN_METHOD(ConsumerWrap::Close) {
     ConsumerWrap * obj = Nan::ObjectWrap::Unwrap<ConsumerWrap>(info.Holder());
-    if (obj->m_isOpen) {
-      obj->m_isOpen = false;
+    if (obj->m_is_open) {
+      obj->m_is_open = false;
       obj->m_consumer->Close();
       delete obj->m_consumer;
       return;
@@ -88,7 +88,7 @@
 
   NAN_METHOD(ConsumerWrap::GetMessageSync) {
     ConsumerWrap * obj = Nan::ObjectWrap::Unwrap<ConsumerWrap>(info.Holder());
-    if (!obj->m_isOpen) {
+    if (!obj->m_is_open) {
       Nan::ThrowError("Consumer was already closed");
     }
     Message * msg = obj->m_consumer->Poll();
@@ -103,7 +103,7 @@
 
   NAN_METHOD(ConsumerWrap::GetMessage) {
     ConsumerWrap * obj = Nan::ObjectWrap::Unwrap<ConsumerWrap>(info.Holder());
-    if (!obj->m_isOpen) {
+    if (!obj->m_is_open) {
       Nan::ThrowError("Consumer closed");
     }
     Nan::Callback * callback = new Nan::Callback(info[0].As<v8::Function>());

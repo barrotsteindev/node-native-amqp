@@ -21,16 +21,16 @@ AMQPConsumer::~AMQPConsumer() {
 }
 
 Message * AMQPConsumer::Poll() {
-    AmqpClient::Envelope::ptr_t msg;
-    AMQPConsumer::m_consume_lock.lock();
-    m_connection->GetChannel()->BasicConsumeMessage(m_consumer_string,
-                                                    msg, m_timeout);
-    AMQPConsumer::m_consume_lock.unlock();
-    if (msg == NULL) {
-      return NULL;
-    }
-    Message * msg_obj = new Message(m_connection, msg);
-    return msg_obj;
+  AmqpClient::Envelope::ptr_t msg;
+  AMQPConsumer::m_consume_lock.lock();
+  m_connection->GetChannel()->BasicConsumeMessage(m_consumer_string,
+                                                  msg, m_timeout);
+  AMQPConsumer::m_consume_lock.unlock();
+  if (msg == NULL) {
+    return NULL;
+  }
+  Message * msg_obj = new Message(m_connection, msg);
+  return msg_obj;
 }
 
 void AMQPConsumer::Close() {

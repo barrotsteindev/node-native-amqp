@@ -86,6 +86,7 @@ class ChannelWrap : public Nan::ObjectWrap {
     static Nan::Persistent<v8::Function> my_constructor;
     return my_constructor;
   }
+
   static inline v8::Local<v8::String> & hostnameKey() {
     static v8::Local<v8::String> v8Hostname = Nan::New("hostName")
                                                       .ToLocalChecked();

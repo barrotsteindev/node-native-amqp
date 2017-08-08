@@ -49,7 +49,7 @@ class ConsumerWrap : public Nan::ObjectWrap {
   }
 
  private:
-  bool m_isOpen = false;
+  bool m_is_open = false;
   explicit ConsumerWrap(Channel * channel, const std::string & queue,
       const std::string & routingKey, bool autoAck,
       int prefetchCount, int timeOut);
