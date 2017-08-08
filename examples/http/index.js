@@ -36,7 +36,7 @@ if (cluster.isMaster) {
   app.use('/', router);
   app.listen(port, '0.0.0.0', (err) => {
     if (err) {
-      return console.log('something bad hrouterened', err)
+      return console.log('something bad happened', err)
     }
     console.log(`server is listening on ${port}`)
   });
