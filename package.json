@@ -1,13 +1,13 @@
 {
   "name": "node-native-amqp",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Native AMQP Nodejs library",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "node-gyp rebuild"
   },
-  "author": "",
+  "author": "Bar Rotstein",
   "gypfile": true,
   "license": "ISC",
   "dependencies": {
