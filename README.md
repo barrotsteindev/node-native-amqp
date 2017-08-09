@@ -47,7 +47,7 @@ let consumer = channel.Consumer({ 'queue': 'jobs',
                                   'timeOut': 250 });
 consumer.getMessage(function(err, msg) {
     if (err) {
-      console.log('err: ' + err);
+      return console.log('err: ' + err);
     }
       console.log(msg.value().toString());
       msg.ack();
