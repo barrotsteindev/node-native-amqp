@@ -33,7 +33,7 @@ let channel = new amqp.Channel({'uri': 'amqp://guest:guest@localhost:5672'});
 
 * queue -> queue to consume.
 * routingKey -> routing key to bind.
-* timeOut -> default is 250ms.
+* timeOut -> default is 250ms (must be 250ms or higher).
 ### Functions
 
 * getMessage(cb) -> callback get an error and buffer.
@@ -48,11 +48,11 @@ let consumer = channel.Consumer({ 'queue': 'jobs',
 consumer.getMessage(function(err, msg) {
     if (err) {
       console.log('err: ' + err);
-    } else {
+    }
       console.log(msg.value().toString());
       msg.ack();
-    }
-}
+
+});
 ```
 
 ### Installing

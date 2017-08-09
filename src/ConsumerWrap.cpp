@@ -18,7 +18,7 @@
                                const v8::Local<v8::Object> & conf) {
     int timeOut = conf->Has(timeOutKey()) ?
                   conf->Get(timeOutKey())->NumberValue() :
-                  200;
+                  250;
     int prefetchCount = conf->Has(prefetchKey()) ?
                         conf->Get(prefetchKey())->NumberValue() :
                         10;
