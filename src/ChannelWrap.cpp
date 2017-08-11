@@ -13,7 +13,7 @@ class ChannelWrap : public Nan::ObjectWrap {
     tpl->SetClassName(Nan::New("Channel").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
-    // Nan::SetPrototypeMethod(tpl, "describe", GetHostname);
+    Nan::SetPrototypeMethod(tpl, "describe", Describe);
     Nan::SetPrototypeMethod(tpl, "Consumer", CreateConsumer);
 
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
@@ -39,7 +39,6 @@ class ChannelWrap : public Nan::ObjectWrap {
     if (!consumerConf->Has(ConsumerWrap::routingKey())) {
       return Nan::ThrowTypeError("Key: routingKey must be supllied");
     }
-
     ConsumerWrap * consumer = ConsumerWrap::Create(channel->GetChannel(),
                                                    consumerConf);
     v8::Local<v8::Object> consumerObj = consumer->V8Instance();
@@ -65,6 +64,12 @@ class ChannelWrap : public Nan::ObjectWrap {
     }
   }
 
+  static NAN_METHOD(Describe) {
+    ChannelWrap * channel = Nan::ObjectWrap::Unwrap<ChannelWrap>(info.Holder());
+    info.GetReturnValue().Set(Nan::New(channel->GetChannel()->Describe())
+                                                             .ToLocalChecked());
+  }
+
   static NAN_METHOD(New) {
      if (!info[0]->IsObject()) {
        Nan::ThrowTypeError("Channel configuration must be a json object");
@@ -87,28 +92,28 @@ class ChannelWrap : public Nan::ObjectWrap {
     return my_constructor;
   }
 
-  static inline v8::Local<v8::String> & hostnameKey() {
-    static v8::Local<v8::String> v8Hostname = Nan::New("hostName")
-                                                      .ToLocalChecked();
-    return v8Hostname;
+  static const inline v8::Local<v8::String> hostnameKey() {
+    static Nan::Persistent<v8::String> v8Hostname(Nan::New("hostName")
+                                                  .ToLocalChecked());
+    return Nan::New(v8Hostname);
   }
 
-  static const inline v8::Local<v8::String> & localhost() {
-    static v8::Local<v8::String> v8Localhost = Nan::New("localhost")
-                                                        .ToLocalChecked();
-    return v8Localhost;
+  static const inline v8::Local<v8::String> localhost() {
+    static Nan::Persistent<v8::String> v8Localhost(Nan::New("localhost")
+                                                  .ToLocalChecked());
+    return Nan::New(v8Localhost);
   }
 
-  static const inline v8::Local<v8::String> & portKey() {
-    static v8::Local<v8::String> v8PortKey = Nan::New("port")
-                                                          .ToLocalChecked();
-    return v8PortKey;
+  static const inline v8::Local<v8::String> portKey() {
+    static Nan::Persistent<v8::String> v8PortKey(Nan::New("port")
+                                                .ToLocalChecked());
+    return Nan::New(v8PortKey);
   }
 
-  static const inline v8::Local<v8::String> & uriKey() {
-    static v8::Local<v8::String> v8UriKey = Nan::New("uri")
-                                                          .ToLocalChecked();
-    return v8UriKey;
+  static const inline v8::Local<v8::String>  uriKey() {
+    static Nan::Persistent<v8::String> uriKeyPersist(Nan::New("uri")
+                                                    .ToLocalChecked());
+    return Nan::New(uriKeyPersist);
   }
 };
 

@@ -19,33 +19,34 @@ class ConsumerWrap : public Nan::ObjectWrap {
     static Nan::Persistent<v8::Function> my_constructor;
     return my_constructor;
   }
-  static const inline v8::Local<v8::String> & queueKey() {
-    static v8::Local<v8::String> v8Queue = Nan::New("queue")
-                                                         .ToLocalChecked();
-    return v8Queue;
+  static const inline v8::Local<v8::String> queueKey() {
+    static Nan::Persistent<v8::String> v8Queue(Nan::New("queue")
+                                               .ToLocalChecked());
+    return Nan::New(v8Queue);
   }
 
-  static const inline v8::Local<v8::String> & ackKey() {
-    static v8::Local<v8::String> v8Ack = Nan::New("autoAck").ToLocalChecked();
-    return v8Ack;
+  static const inline v8::Local<v8::String> ackKey() {
+    static Nan::Persistent<v8::String> v8Ack(Nan::New("autoAck")
+                                            .ToLocalChecked());
+    return Nan::New(v8Ack);
   }
 
-  static const inline v8::Local<v8::String> & timeOutKey() {
-    static v8::Local<v8::String> v8TimeOut = Nan::New("timeOut")
-                                                     .ToLocalChecked();
-    return v8TimeOut;
+  static const inline v8::Local<v8::String> timeOutKey() {
+    static Nan::Persistent<v8::String> v8TimeOut(Nan::New("timeOut")
+                                                     .ToLocalChecked());
+    return Nan::New(v8TimeOut);
   }
 
-  static const inline v8::Local<v8::String> & routingKey() {
-    static v8::Local<v8::String> v8RoutingKey = Nan::New("routingKey")
-                                                        .ToLocalChecked();
-    return v8RoutingKey;
+  static const inline v8::Local<v8::String> routingKey() {
+    static Nan::Persistent<v8::String> v8RoutingKey(Nan::New("routingKey")
+                                                    .ToLocalChecked());
+    return Nan::New(v8RoutingKey);
   }
 
-  static const inline v8::Local<v8::String> & prefetchKey() {
-    static v8::Local<v8::String> v8PrefetchKey = Nan::New("prefetch")
-                                                         .ToLocalChecked();
-    return v8PrefetchKey;
+  static const inline v8::Local<v8::String> prefetchKey() {
+    static Nan::Persistent<v8::String> v8PrefetchKey(Nan::New("prefetch")
+                                                    .ToLocalChecked());
+    return Nan::New(v8PrefetchKey);
   }
 
  private:
