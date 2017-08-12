@@ -31,15 +31,14 @@ let channel = new amqp.Channel({'uri': 'amqp://guest:guest@localhost:5672'});
 
 ### Params
 
-* queue -> queue to consume.
-* routingKey -> routing key to bind.
-* timeOut -> default is 250ms (must be 250ms or higher).
+* queue -> Queue to consume.
+* routingKey -> Routing key to bind.
+* timeOut -> Default is 250ms (must be 250ms or higher).
 ### Functions
 
-* getMessage(cb) -> callback get an error and buffer.
-* getMessageSync -> return a buffers on success, otherwise throws an error.
-* ack -> return a boolean if the acknowledge was successful.
-* reject(toReque) -> bool toReque defaults to true. if true message is resent to queue.
+* getMessage(cb(err, msg)) -> Callback gets an error and a Message Object.
+* getMessageSync -> Return a Message object on success, otherwise throws an error.
+* close -> Gracefully removes consumer, notifying the AMQP broker.
 
 ```javascript
 let consumer = channel.Consumer({ 'queue': 'jobs',
@@ -54,6 +53,14 @@ consumer.getMessage(function(err, msg) {
 
 });
 ```
+
+## Message API
+
+### Functions
+
+* ack -> Acknowledges message. return true if the acknowledge was successful.
+* reject(toReque) -> Rejects message. bool toReque defaults to true. if true message is resent to queue.
+* value -> Returns a buffer containing the consumed message payload(content)
 
 ### Installing
 > This library requires the following C/C++ libraries to be installed:
