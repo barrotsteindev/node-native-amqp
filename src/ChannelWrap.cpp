@@ -41,10 +41,9 @@ class ChannelWrap : public Nan::ObjectWrap {
     }
     ConsumerWrap * consumer;
     try {
-      ConsumerWrap::Create(channel->GetChannel(), consumerConf);
+      consumer = ConsumerWrap::Create(channel->GetChannel(), consumerConf);
     } catch (std::exception & e) {
-      Nan::ThrowError(e.what());
-      return;
+      return Nan::ThrowError(e.what());
     }
     v8::Local<v8::Object> consumerObj = consumer->V8Instance();
     info.GetReturnValue().Set(consumerObj);
