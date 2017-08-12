@@ -39,8 +39,13 @@ class ChannelWrap : public Nan::ObjectWrap {
     if (!consumerConf->Has(ConsumerWrap::routingKey())) {
       return Nan::ThrowTypeError("Key: routingKey must be supllied");
     }
-    ConsumerWrap * consumer = ConsumerWrap::Create(channel->GetChannel(),
-                                                   consumerConf);
+    ConsumerWrap * consumer;
+    try {
+      ConsumerWrap::Create(channel->GetChannel(), consumerConf);
+    } catch (std::exception & e) {
+      Nan::ThrowError(e.what());
+      return;
+    }
     v8::Local<v8::Object> consumerObj = consumer->V8Instance();
     info.GetReturnValue().Set(consumerObj);
   }
