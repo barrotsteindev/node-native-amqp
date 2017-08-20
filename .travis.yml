@@ -1,0 +1,35 @@
+language: node_js
+node_js:
+  - "8"
+  - "7"
+  - "6"
+  - "5"
+  - "4"
+sudo: required
+
+env:
+  - API_HOST=http-amqp AMQP_HOST=rabbitmq LD_LIBRARY_PATH=/usr/lib:/usr/local/lib:/usr/local/lib/x86_64-linux-gnu
+
+services:
+  - docker
+
+before_install:
+  - docker network create amqp-net
+  - docker run -d --hostname rabbitmq --name rabbitmq -p 8080:15672 -p 5672:5672 --network=amqp-net rabbitmq:3-management
+  - docker build ./e2e/producer -t rabbit-producer:latest
+  - docker run --network=amqp-net --env AMQP_HOST=rabbitmq rabbit-producer:latest
+  - sudo apt-get update
+  - sudo apt-get install -y libboost-system-dev libboost-chrono-dev cmake git make g++
+  - sudo sh ./e2e/install_rabbitmq-c.sh
+  - sudo sh ./e2e/install_amqplib.sh
+  - npm install
+  - cp -r lib e2e/http-wrapper/
+  - cp -r src e2e/http-wrapper/
+  - cp binding.gyp e2e/http-wrapper/
+  - cd e2e/http-wrapper && npm install && cd ../../
+  - cd e2e/http-tester && npm install && cd ../../
+
+script:
+  - cd e2e/http-wrapper && node index.js &
+  - sleep 5s && cd e2e/http-tester && node index.js
+  - curl -XDELETE http://localhost:3000/ && sleep 5s

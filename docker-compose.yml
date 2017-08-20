@@ -1,0 +1,21 @@
+version: '2'
+services:
+  rabbit-producer:
+    build: ./e2e/producer
+    environment:
+      - AMQP_HOST=rabbitmq
+    depends_on:
+      - "rabbitmq"
+  native-amqp:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - AMQP_HOST=rabbitmq
+    depends_on:
+      - "rabbit-producer"
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "8080:15672"
